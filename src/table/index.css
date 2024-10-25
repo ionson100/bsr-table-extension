@@ -1,0 +1,66 @@
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    cursor: pointer;
+}
+
+th, td {
+    padding: 10px;
+}
+
+
+table {
+    width: 80%;
+    padding: 30px;
+    margin: 30px;
+}
+
+/*tr:nth-child(even) {*/
+/*    background-color: #f1f4f4;*/
+/*}*/
+
+th {
+    background: #dedcdc;
+}
+
+td[data-d] {
+    font-weight: bold;
+}
+
+caption {
+    cursor: default;
+    font-size: 20px;
+    caption-side: top;
+    text-align: left;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: #d0cbcb;
+}
+
+th:hover {
+    background: #d0cbcb;
+}
+
+tr:active {
+    background: #a7a3a3;
+}
+
+th:active {
+    background: #a7a3a3;
+}
+
+td:hover {
+    background: #f1c7e3;
+}
+
+td:active {
+    background: #f5b3df;
+}
+.batman{
+    color: red;
+    font-weight: bold;
+}
+

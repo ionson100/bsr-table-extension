@@ -1,13 +1,112 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+/* Designing for scroll-bar */
+/*::-webkit-scrollbar {*/
+/*    width: 2px;*/
+/*}*/
+
+/* Track */
+
+
+.test{
+    background: #f8f6d5;
+    text-align: center;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+
+.row-select > td > *{
+    background-color: #06a9d5;
+    color: white;
+}
+.row-select > td{
+    background-color: #06a9d5;
+    color: white;
+}
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    cursor: pointer;
+}
+td{
+    padding: 0px;
+}
+
+
+thead{
+    background: #dedcdc;
+}
+
+
+thead, tbody { display: block; }
+
+tbody {
+    height: 700px;       /* Just for the demo          */
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
+}
+tbody td, thead th {
+    width: 100px;  /* Optional */
+}
+
+table {
+    width: 100%;
+
+}
+
+/*tr:nth-child(even) {*/
+/*    background-color: #f1f4f4;*/
+/*}*/
+
+th {
+    background: #dedcdc;
+}
+
+td[data-d] {
+    font-weight: bold;
+}
+
+caption {
+    cursor: default;
+    font-size: 20px;
+    caption-side: top;
+    text-align: left;
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+tr:hover {
+    background: #f1ecec;
+}
+
+th:hover {
+    background: #d0cbcb;
+}
+
+tr:active {
+    background: #a7a3a3;
+}
+
+th:active {
+    background: #a7a3a3;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: gainsboro;
+
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #9a9898;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #7f7878;
 }
