@@ -20,21 +20,22 @@ type headerGroupType = {
     eventKey?: string;
     onClick?: (eventKey?: string) => void
 }
-type Widther = {
-    percent?: number;
-    pixel?: number;
-}
+
 
 
 export class Table<T = any> extends React.Component<PropsTable<T>, any> {
+
+    private refDiwHeader= React.createRef<HTMLDivElement>();
+    private refDiwBody= React.createRef<HTMLDivElement>();
     private list: Array<PropsColumn> = []
     private MapSelect = new Map<number, DataRow>()
-    private listWithder?: Array<Widther> = undefined
+    private listWidth:Array<string|number|undefined>=[];
+
     private id?: string;
     private listGroup: Array<colGroupType> = [];
     private listHeaderGroup: Array<headerGroupType> = [];
     private refBody = React.createRef<HTMLTableSectionElement>()
-    private refRowBody = React.createRef<HTMLTableRowElement>()
+
 
 
     constructor({props}: { props: Readonly<PropsTable<T>> }) {
@@ -142,11 +143,9 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
 
     public Refresh(callback?: () => void) {
         this.forceUpdate(() => {
-            this.resize()
-        })
-        setTimeout(() => {
 
         })
+
     }
 
     private renderHeaderGroup() {
@@ -183,6 +182,8 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
     private renderItemRowProperty(props: DataRow<T>, index: number) {
 
         const rowCells = props.item
+
+
 
 
         return (
@@ -241,23 +242,21 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
                 {
 
                     this.list.map((c, indexD) => {
-                        let w = this.listWithder ? this.listWithder[indexD].pixel : undefined
+                        const w=this.listWidth[indexD]
 
-                        if (c.propertyName === null || c.propertyName === undefined || c.propertyName.trim().length == 0) {
-                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}></td>
+                        if (c.propertyName === null || c.propertyName === undefined || c.propertyName.trim().length === 0) {
+                            return <td data-propery-name={c.propertyName} style={{width:w}} key={key()}></td>
                         }
                         const ob = !rowCells ? undefined : (rowCells as any)[c.propertyName];
 
-                        if(c.propertyName==='age')
-                        console.log('33333333'+typeof ob +"  "+ob)
                         if (ob===undefined||ob===null) {
-                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}></td>
+                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}></td>
                         } else if (typeof ob === 'number') {
-                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{`${ob}`}</td>
+                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{`${ob}`}</td>
                         } else if (typeof ob === 'function') {
-                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{ob()}</td>
+                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{ob()}</td>
                         } else {
-                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{ob}</td>
+                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{ob}</td>
                         }
 
 
@@ -277,154 +276,92 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
     }
 
     componentDidMount() {
-        this.resize()
-        const THIS = this;
-        this.refBody.current!.addEventListener('resize', function (event) {
-            THIS.resize()
-        }, true);
-        //alert(this.refBody.current?.offsetWidth)
+
+            let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
+            if(hs > 0) {
+                this.refDiwHeader.current!.style.marginRight= hs + 'px'
+            }
+
+            console.log(hs)
+
+
+
+
+
     }
-
-    resize() {
-        if (!this.refRowBody.current) return
-        let tot = 0;
-        let countFree = 0;
-        this.listWithder = []
-        this.list.forEach((c, index) => {
-            const w: Widther = {
-                percent: undefined,
-                pixel: undefined
-            }
-            if (c.style && c.style.width) {
-                if (c.style.width.toString().includes("%")) {
-                    w.percent = parseInt(c.style.width.toString().replace("%", ""))
-                } else {
-                    const h = this.refRowBody.current!.querySelector('[data-column-index="' + index + '"]');
-                    if (h) {
-                        w.pixel = (h as HTMLElement).offsetWidth
-                        tot = tot + w.pixel;
-                    }
-
-                }
-            }
-            if (!w.pixel && !w.percent) {
-                countFree++
-            }
-
-            this.listWithder!.push(w)
-        })
-        let wTotal = this.refBody.current!.offsetWidth - tot;
-        this.listWithder.forEach(r => {
-            if (r.percent) {
-                r.pixel = Math.floor(wTotal / 100 * r.percent);
-            }
-        })
-
-        tot = 0;
-        this.listWithder.forEach(r => {
-            if (r.pixel) {
-                tot = tot + r.pixel;
-            }
-        })
-
-
-        let hs = this.refBody.current!.offsetWidth - this.refBody.current!.clientWidth;
-
-
-        let wReal = Math.floor((this.refBody.current!.offsetWidth - hs * 2 - tot) / countFree);
-
-        if (countFree === 0 && Math.abs(this.refBody.current!.offsetWidth - tot) < 3 && hs > 0) {
-            console.log('countFree:' + countFree)
-            console.log('hs:' + hs)
-            console.log('offsetWidth:' + this.refBody.current!.offsetWidth)
-            console.log("tot:" + tot)
-            console.log("eReal:" + wReal)
-            tot = 0;
-            for (let i = 0; i < this.listWithder.length - 1; i++) {
-                tot = tot + this.listWithder[i].pixel!
-            }
-            this.listWithder[this.listWithder.length - 1].pixel = Math.floor((this.refBody.current!.offsetWidth - hs * 2 - tot))
-
-        } else {
-            this.listWithder!.forEach(r => {
-                if (!r.pixel && !r.percent) {
-                    r.pixel = wReal;
-                }
-            })
+    componentDidUpdate(prevProps: Readonly<PropsTable<T>>, prevState: Readonly<any>, snapshot?: any) {
+        let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
+        if(hs > 0) {
+            this.refDiwHeader.current!.style.marginRight= hs + 'px'
         }
-        //validate
-        tot = 0;
-        this.listWithder.forEach(r => {
-            const t = tot + r.pixel!;
-            if (t + 3 > this.refBody.current!.offsetWidth) {
-
-            }
-
-        })
-
-
-        // console.log(this.listWithder)
-        this.forceUpdate(() => {
-            this.listWithder!.forEach((h, index) => {
-                setTimeout(() => {
-                    const head = this.refRowBody.current!.querySelector('[data-column-index="' + index + '"]');
-                    (head as HTMLElement).style.width = h.pixel + "px"
-                })
-
-
-            })
-        })
-        // const head=this.refRowBody.current!.querySelector('[data-column-index="'+4+'"]');
-        //
-        // const d=(head as HTMLElement).offsetWidth;
-        // (head as HTMLElement).style.width=0+"px"
 
     }
 
+
+    renderHeader(c:PropsColumn,index:number){
+        if(index===0){this.listWidth.length=0}
+        if(c.style&&c.style.width){
+            this.listWidth.push(c.style.width)
+        }else {
+            this.listWidth.push(undefined)
+        }
+        
+        return (
+            <th
+                data-column-index={index}
+                onClick={this.columnClick.bind(this, index, c.propertyName)}
+                key={key()}
+                className={c.className}
+                style={c.style}>{c.children}
+            </th>
+        )
+
+    }
 
     render() {
         this.innerRender()
         return (
-
-            <table style={this.props.style} is={this.props.id} className={this.props.className}>
-                <thead>
+            <div style={this.props.style} id={this.props.id}>
                 {!this.props.caption ? null : (
-                    <caption>
+                    <div className={'tb-caption'} style={this.props.styleCaption}>
                         {
                             this.props.caption
                         }
-                    </caption>
+                    </div>
 
 
                 )}
+                <div className={'tbl-header'} ref={this.refDiwHeader}>
+                    <table style={this.props.styleHeader} >
+                        <thead>
+                        <tr >
+                            {
+                                this.list.map((c, index) => {
+                                   return this.renderHeader(c,index)
+                                })
+                            }
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div className={'tbl-content'} ref={this.refDiwBody}>
+                    <table style={this.props.styleBody} >
+                        <tbody ref={this.refBody}>
+                        {
+                            this.props.rowItems?.map((row, index) => {
 
-                {
-                    this.renderHeaderGroup()
-                }
-                <tr ref={this.refRowBody} style={{marginRight: 16}}>
-                    {
-                        this.list.map((c, index) => {
-                            return <th
-                                data-column-index={index}
-                                onClick={this.columnClick.bind(this, index, c.propertyName)}
-                                key={key()}
-                                className={c.className}
-                                style={c.style}>{c.children}
-                            </th>
-                        })
-                    }
-                </tr>
-                </thead>
-                <tbody ref={this.refBody}>
-                {
-                    this.props.rowItems?.map((row, index) => {
+                                return this.renderTd(row, index)
 
-                        return this.renderTd(row, index)
+                            })
+                        }
+                        </tbody>
+                    </table>
+                </div>
 
-                    })
-                }
-                </tbody>
-            </table>
+
+            </div>
+
+
         )
             ;
     }

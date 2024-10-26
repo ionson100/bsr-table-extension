@@ -19,6 +19,9 @@ export class DataRow<T =any>{
 export type PropsTable<T=any> = {
     className?: string;
     style?: React.CSSProperties | undefined,
+    styleHeader?: React.CSSProperties | undefined,
+    styleBody?: React.CSSProperties | undefined,
+    styleCaption?: React.CSSProperties | undefined,
     id?: string
     caption?:string|ReactElement;
     children?: string|React.ReactNode;

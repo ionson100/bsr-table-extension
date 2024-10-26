@@ -1,18 +1,16 @@
 
-/* Designing for scroll-bar */
-/*::-webkit-scrollbar {*/
-/*    width: 2px;*/
-/*}*/
-
-/* Track */
-
-
-.test{
-    background: #f8f6d5;
+.tb-caption{
+    padding: 5px 5px;
     text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
-
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    cursor: pointer;
+}
 .row-select > td > *{
     background-color: #06a9d5;
     color: white;
@@ -21,92 +19,56 @@
     background-color: #06a9d5;
     color: white;
 }
-table {
-    border-collapse: collapse;
+table{
+    width:100%;
+    table-layout: fixed;
 }
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-    cursor: pointer;
+table > thead > tr > th{
+    border: 1px solid white;
+}
+table > tbody > tr > td:first-child{
+    text-align: center;
+}
+/*table > tbody > tr > td{*/
+/*    padding-left: 10px;*/
+/*}*/
+.tbl-header{
+    background: #e2e5ef;
+    color: #0e0e0e;
+
+}
+.tbl-content{
+    height:300px;
+    overflow-x:auto;
+    margin-top: 2px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+th{
+    padding: 5px 15px;
+    text-align: center;
+    font-weight: 500;
+
+    /*text-transform: uppercase;*/
 }
 td{
-    padding: 0px;
-}
 
-
-thead{
-    background: #dedcdc;
-}
-
-
-thead, tbody { display: block; }
-
-tbody {
-    height: 700px;       /* Just for the demo          */
-    overflow-y: auto;    /* Trigger vertical scroll    */
-    overflow-x: hidden;  /* Hide the horizontal scroll */
-}
-tbody td, thead th {
-    width: 100px;  /* Optional */
-}
-
-table {
-    width: 100%;
-
-}
-
-/*tr:nth-child(even) {*/
-/*    background-color: #f1f4f4;*/
-/*}*/
-
-th {
-    background: #dedcdc;
-}
-
-td[data-d] {
-    font-weight: bold;
-}
-
-caption {
-    cursor: default;
-    font-size: 20px;
-    caption-side: top;
+    padding: 5px 15px;
     text-align: left;
-    padding-bottom: 10px;
-    font-weight: bold;
-}
-
-tr:hover {
-    background: #f1ecec;
-}
-
-th:hover {
-    background: #d0cbcb;
-}
-
-tr:active {
-    background: #a7a3a3;
-}
-
-th:active {
-    background: #a7a3a3;
+    vertical-align:middle;
+    font-weight: 300;
+    /*text-align: left;*/
+    /*font-weight: 300;*/
+    /*font-size: 12px;*/
+    /*color: #141313;*/
+    /*border-bottom: solid 1px rgba(255,255,255,0.1);*/
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: gainsboro;
-
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
-
-/* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #9a9898;
-
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #7f7878;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }

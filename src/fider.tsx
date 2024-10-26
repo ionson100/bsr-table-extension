@@ -26,13 +26,14 @@ export function GetDataRowList(n:number, list:Array<DataRow>){
 }
 function GetDataRow(user:User):DataRow{
     const data= new DataRow()
+    data.style={background:"green"}
     data.tag=user;
-    data.item={
-        button:<div style={{display:"flex",justifyContent:"center"}}><TiEdit size={20} color={"green"}/></div>,
-        firstName:data.tag.firstName,
-        lastName:data.tag.lastName,
-        age:<div style={{textAlign:"center"}}>{data.tag.age}</div>,
-        profession:data.tag.profession
+    data.item= {
+        button: <div style={{color: "red"}}>{user.age}</div>,
+        firstName: data.tag.firstName,
+        lastName: data.tag.lastName,
+        age: 11,
+        profession: data.tag.profession
 
     }
     return data

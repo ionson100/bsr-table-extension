@@ -4,44 +4,12 @@ import './App.css';
 import {Column, Table, DataRow, ColumnGroup, HeaderGroup} from "./table";
 import {GetDataRowList} from "./fider";
 
-//import './table/index.css'
+import './index.css'
 
 
-type assa = {
-    id: string
-    id2: any
-    name: string
-    sd: ReactElement
-}
+
 const listData: Array<DataRow> = [];
 
-function getData(n: number) {
-
-    listData.length = 0;
-    for (let i = 0; i < n; i++) {
-
-        const df = {
-            name: 'asas',
-            name2: 'sdsd'
-        }
-        const data = new DataRow<assa>()
-        data.tag = df;
-        const item: assa = {
-            id: '76',
-            id2: () => {
-                return "ajhshjhhs"
-            },
-            name: "name:" + i,
-            sd: <div className={'test'}>index:{i}</div>
-        }
-        data.id = "assa" + i
-        data.onClick = (dataRow, row) => {
-        }
-        data.item = item
-        listData.push(data)
-    }
-    return listData
-}
 
 
 function App() {
@@ -61,25 +29,32 @@ function App() {
             }}>
                 add
             </button>
-            <div style={{display:"flex",justifyContent:"center"}}>
+            <button onClick={() => {
+                GetDataRowList(5, listData)
+                refTable.current!.Refresh()
+            }}>
+                add5
+            </button>
+            <div style={{display: "flex", justifyContent: "center"}}>
                 <Table
-                    style={{width: "fit-content",background:"rgba(253,251,226,0.94)"}}
+                    style={{width:"70%"}}
+                    styleBody={{ background: "rgba(253,251,226,0.94)"}}
+                    styleHeader={{background: "rgba(3,38,108,0.94)",color:"white"}}
                     useRowSelection={true}
                     id={'assa-123'}
                     className={'scroll'}
-                    //caption={'test: 345'}
+                    caption={'test: 345'}
                     ref={refTable}
-                    rowItems={GetDataRowList(10, listData)}>
+                    rowItems={GetDataRowList(5, listData)}>
 
-                    <Column style={{width: "20px",padding:p}} propertyName={'button'}></Column>
-                    <Column style={{width: 400,padding:p}} propertyName={'firstName'}>firstName</Column>
-                    <Column style={{width: 400,padding:p}} propertyName={'lastName'}>lastName</Column>
-                    <Column style={{width: 30,padding:p}} propertyName={'age'}>age</Column>
-                    <Column style={{width: 200,padding:p}} propertyName={'profession'}>profession</Column>
+                    <Column style={{width: 50}} propertyName={'button'}>33</Column>
+                    <Column propertyName={'firstName'}>firstName</Column>
+                    <Column propertyName={'lastName'}>lastName</Column>
+                    <Column propertyName={'age'}>age</Column>
+                    <Column style={{width: "50%"}}  propertyName={'profession'}>profession</Column>
                 </Table>
 
             </div>
-
 
 
         </div>
