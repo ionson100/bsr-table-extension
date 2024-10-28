@@ -4,19 +4,18 @@ import React, {ReactElement, ReactEventHandler} from "react";
 
 
 export class DataRow<T =any>{
-
-    public color?:string;
     public title?:string;
-    public item?:T
     public style?: React.CSSProperties | undefined
     public className?: string;
     public onClick?:(dataRow:DataRow<T>,e: HTMLTableRowElement)=>void
     public id?:string
     public tag?:any
+    public getView?:()=>T
 }
 
 
 export type PropsTable<T=any> = {
+    height?:number
     className?: string;
     style?: React.CSSProperties | undefined,
     styleHeader?: React.CSSProperties | undefined,
@@ -31,7 +30,7 @@ export type PropsTable<T=any> = {
     onClickCell?:(id:string,row:number,column:number)=>void
     useInnerHTML?:boolean
     useRowSelection?:boolean
-    useRowMultiSelection?:boolean
+    //useRowMultiSelection?:boolean
     classNameSelection?:string
 }
 export type PropsColumn ={

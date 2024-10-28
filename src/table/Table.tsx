@@ -3,6 +3,7 @@ import {DataRow, PropsColumn, PropsTable} from "./PropsTable";
 import {v4 as key} from 'uuid';
 import {ColumnGroup} from "./ColumnGroup";
 import {HeaderGroup} from "./HeaderGroup";
+import {LiaAdjustSolid} from "react-icons/lia";
 
 
 type colGroupType = {
@@ -22,14 +23,15 @@ type headerGroupType = {
 }
 
 
-
 export class Table<T = any> extends React.Component<PropsTable<T>, any> {
-
-    private refDiwHeader= React.createRef<HTMLDivElement>();
-    private refDiwBody= React.createRef<HTMLDivElement>();
+    private heightInner?: number
+    private refDivWrapper = React.createRef<HTMLDivElement>();
+    private refDiwBody = React.createRef<HTMLDivElement>();
+    private refDivHeader = React.createRef<HTMLDivElement>();
+    private refDivCaption = React.createRef<HTMLDivElement>();
     private list: Array<PropsColumn> = []
     private MapSelect = new Map<number, DataRow>()
-    private listWidth:Array<string|number|undefined>=[];
+    private listWidth: Array<string | number | undefined> = [];
 
     private id?: string;
     private listGroup: Array<colGroupType> = [];
@@ -37,11 +39,15 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
     private refBody = React.createRef<HTMLTableSectionElement>()
 
 
-
     constructor({props}: { props: Readonly<PropsTable<T>> }) {
         super(props);
         this.cellClick = this.cellClick.bind(this)
 
+
+    }
+
+    public GetListSelect(){
+        return Array.from(this.MapSelect, ([value]) => ({value}));
     }
 
     private innerRender() {
@@ -122,7 +128,7 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
                 className: element.props.className,
                 children: element.props.children,
             })
-            if (header) {
+            if (header) {// todo добавить стиль ширины
                 header.colspan! += 1;// React.Children.count((d as any).props.children);
             }
         }
@@ -142,60 +148,33 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
     }
 
     public Refresh(callback?: () => void) {
-        this.forceUpdate(() => {
 
-        })
+        this.forceUpdate(callback)
 
     }
-
-    private renderHeaderGroup() {
-
-        if (this.listHeaderGroup.length > 0) {
-            if (this.listHeaderGroup.filter(a => a.colspan !== undefined).length > 0) {
-                return <tr>
-                    {
-                        this.listHeaderGroup.map((g, index) => {
-                            if (g.colspan) {
-                                return <th key={key()}
-                                           onClick={() => {
-                                               if (g.onClick) {
-                                                   g.onClick(g.eventKey)
-                                               }
-                                           }}
-                                           style={g.style} className={g.className} id={g.id}
-                                           colSpan={g.colspan}>{g.title} </th>
-                            } else {
-                                return <th></th>
-                            }
-                        })
-                    }
-
-                </tr>
-            }
-        } else {
-            return null;
+    public SelectRowsById(id: string) {
+        const d= document.getElementById(id)
+        if(d){
+            d.classList.add(this.props.classNameSelection ?? 'row-select')
         }
-
     }
+
+
 
 
     private renderItemRowProperty(props: DataRow<T>, index: number) {
 
-        const rowCells = props.item
-
-
+        const view=props.getView?props.getView():undefined
 
 
         return (
 
             <tr
-
                 key={key()}
                 id={props.id}
                 className={props.className}
                 style={props.style}
                 title={props.title}
-                color={props.color}
                 onClick={(e) => {
 
 
@@ -242,21 +221,22 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
                 {
 
                     this.list.map((c, indexD) => {
-                        const w=this.listWidth[indexD]
+                        const w = this.listWidth[indexD]
 
                         if (c.propertyName === null || c.propertyName === undefined || c.propertyName.trim().length === 0) {
-                            return <td data-propery-name={c.propertyName} style={{width:w}} key={key()}></td>
+                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}></td>
                         }
-                        const ob = !rowCells ? undefined : (rowCells as any)[c.propertyName];
+                        const ob = !view ? undefined : (view as any)[c.propertyName];
 
-                        if (ob===undefined||ob===null) {
-                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}></td>
+
+                        if (ob === undefined || ob === null) {
+                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}></td>
                         } else if (typeof ob === 'number') {
-                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{`${ob}`}</td>
+                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{`${ob}`}</td>
                         } else if (typeof ob === 'function') {
-                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{ob()}</td>
+                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{ob()}</td>
                         } else {
-                            return <td data-propery-name={c.propertyName}  style={{width:w}}  key={key()}>{ob}</td>
+                            return <td data-propery-name={c.propertyName} style={{width: w}} key={key()}>{ob}</td>
                         }
 
 
@@ -269,43 +249,58 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
     }
 
 
-    private renderTd(row: DataRow<T>, index: number) {
 
-        return this.renderItemRowProperty(row, index)
+    get height(): number | undefined {
+        return this.heightInner;
+    }
+    set height(value   ){
+        this.heightInner = value;
+        this.refreshHeight()
+    }
 
+    private refreshHeight(){
+        if (this.heightInner) {
+            const w1 = this.refDivCaption.current?.offsetHeight??0
+            const w2 = this.refDivHeader.current!.offsetHeight
+            const tw=this.heightInner- w1-w2
+            if(tw>0){
+                this.refDiwBody.current!.style.height=tw+'px'
+            }
+
+        }
     }
 
     componentDidMount() {
-
-            let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
-            if(hs > 0) {
-                this.refDiwHeader.current!.style.marginRight= hs + 'px'
-            }
-
-            console.log(hs)
-
-
+        this.heightInner = this.props.height
+        let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
+        if (hs > 0) {
+            this.refDivHeader.current!.style.marginRight = hs + 'px'
+        }
+        this.refreshHeight()
 
 
 
     }
-    componentDidUpdate(prevProps: Readonly<PropsTable<T>>, prevState: Readonly<any>, snapshot?: any) {
+
+    componentDidUpdate() {
         let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
-        if(hs > 0) {
-            this.refDiwHeader.current!.style.marginRight= hs + 'px'
+        if (hs > 0) {
+            this.refDivHeader.current!.style.marginRight = hs + 'px'
         }
 
     }
 
 
-    renderHeader(c:PropsColumn,index:number){
-        if(index===0){this.listWidth.length=0}
-        if(c.style&&c.style.width){
+    private renderHeader(c: PropsColumn, index: number) {
+        if (index === 0) {
+            this.listWidth.length = 0
+        }
+        if (c.style && c.style.width) {
             this.listWidth.push(c.style.width)
-        }else {
+        } else {
             this.listWidth.push(undefined)
         }
-        
+
         return (
             <th
                 data-column-index={index}
@@ -317,13 +312,43 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
         )
 
     }
+    renderHeaderGroup() {
+
+        console.log(this.listHeaderGroup)
+        if (this.listHeaderGroup.length > 0) {
+            if (this.listHeaderGroup.filter(a => a.colspan !== undefined).length > 0) {
+                return <tr>
+                    {
+                        this.listHeaderGroup.map((g, index) => {
+                            if (g.colspan) {
+                                return <th key={'c7'+index}
+                                           onClick={() => {
+                                               if(g.onClick){
+                                                   g.onClick(g.eventKey)
+                                               }
+                                           }}
+                                           style={g.style} className={g.className} id={g.id}
+                                           colSpan={g.colspan}>{g.title} </th>
+                            } else {
+                                return <th></th>
+                            }
+                        })
+                    }
+
+                </tr>
+            }
+        } else {
+            return null;
+        }
+
+    }
 
     render() {
         this.innerRender()
         return (
-            <div style={this.props.style} id={this.props.id}>
+            <div style={this.props.style} id={this.props.id} ref={this.refDivWrapper} className={this.props.className}>
                 {!this.props.caption ? null : (
-                    <div className={'tb-caption'} style={this.props.styleCaption}>
+                    <div className={'tb-caption'} style={this.props.styleCaption} ref={this.refDivCaption}>
                         {
                             this.props.caption
                         }
@@ -331,13 +356,16 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
 
 
                 )}
-                <div className={'tbl-header'} ref={this.refDiwHeader}>
-                    <table style={this.props.styleHeader} >
+                <div className={'tbl-header'} ref={this.refDivHeader}>
+                    <table style={this.props.styleHeader}>
                         <thead>
-                        <tr >
+                        {
+                            this.renderHeaderGroup()
+                        }
+                        <tr>
                             {
                                 this.list.map((c, index) => {
-                                   return this.renderHeader(c,index)
+                                    return this.renderHeader(c, index)
                                 })
                             }
                         </tr>
@@ -345,12 +373,12 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
                     </table>
                 </div>
                 <div className={'tbl-content'} ref={this.refDiwBody}>
-                    <table style={this.props.styleBody} >
+                    <table style={this.props.styleBody}>
                         <tbody ref={this.refBody}>
                         {
                             this.props.rowItems?.map((row, index) => {
 
-                                return this.renderTd(row, index)
+                                return this.renderItemRowProperty(row, index)
 
                             })
                         }
@@ -363,7 +391,7 @@ export class Table<T = any> extends React.Component<PropsTable<T>, any> {
 
 
         )
-            ;
+
     }
 
 }
