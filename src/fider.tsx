@@ -48,7 +48,7 @@ class Edit extends BaseBodyDialog<EdotProperty> {
 
     render() {
         return (
-            <div style={{padding: 20}}>
+            <div id={'d-34'} style={{padding: 20}}>
 
                 <div >First Name:</div>
                 <input ref={this.refNameFirst} type={"text"} defaultValue={this.props.user.firstName}/>
@@ -96,9 +96,14 @@ function GetDataRow(user: User, callback?: (id: string) => void): DataRow {
 
     data.id = user.id
     data.tag = user;
+    // data.onClick= (dataRow, target) => {
+    //     console.log(dataRow)
+    //     console.log(target)
+    // }
     data.getView = () => {
         return {
-            button: <div onClick={() => {
+            button: <div onClick={(e) => {
+                e.stopPropagation()
                 ShowBsrDialog({
                     position: "top",
                     icon: <FaReact/>,
@@ -112,7 +117,7 @@ function GetDataRow(user: User, callback?: (id: string) => void): DataRow {
                         if (callback) callback(a.dataBody.id)
                     }
                 })
-            }}><TiEdit/></div>,
+            }}><TiEdit color={"rgba(1,47,156,0.94)"} size={20}/></div>,
 
 
             firstName: user.firstName,

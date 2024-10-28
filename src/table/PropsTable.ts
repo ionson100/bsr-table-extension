@@ -3,14 +3,14 @@ import React, {ReactElement, ReactEventHandler} from "react";
 
 
 
-export class DataRow<T =any>{
+export class DataRow{
     public title?:string;
     public style?: React.CSSProperties | undefined
     public className?: string;
-    public onClick?:(dataRow:DataRow<T>,e: HTMLTableRowElement)=>void
+    public onClick?:(dataRow:DataRow,target: EventTarget)=>void
     public id?:string
     public tag?:any
-    public getView?:()=>T
+    public getView?:()=>any
 }
 
 
@@ -24,10 +24,10 @@ export type PropsTable<T=any> = {
     id?: string
     caption?:string|ReactElement;
     children?: string|React.ReactNode;
-    rowItems:Array<DataRow<T>>
-    onClickRow?:(dataRow:DataRow<T>,e: HTMLTableRowElement)=>void
-    onClickColumn?: (id: string, index: number, propertyName: string)=>void
-    onClickCell?:(id:string,row:number,column:number)=>void
+    rowItems:Array<DataRow>
+    onClickRow?:(dataRow:DataRow,e: HTMLTableRowElement)=>void
+    onClickColumn?: ( propertyName: string,eventTarget: HTMLTableHeaderCellElement,eventKey?:string,)=>void
+    onClickCell?:(propertyName: string, props: DataRow, target: EventTarget)=>void
     useInnerHTML?:boolean
     useRowSelection?:boolean
     //useRowMultiSelection?:boolean
@@ -37,6 +37,7 @@ export type PropsColumn ={
     colspan?:number
     propertyName:string
     className?: string;
+    eventKey?:string
     style?: React.CSSProperties | undefined,
     children?:string|React.ReactNode;
 }
