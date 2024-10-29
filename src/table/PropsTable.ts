@@ -1,4 +1,8 @@
-import React, {ReactElement, ReactEventHandler} from "react";
+import React, {ReactElement} from "react";
+import {CellFooter, Column, RowFooter} from "./Column";
+import {HeaderGroup} from "./HeaderGroup";
+import {ColumnGroup} from "./ColumnGroup";
+
 
 
 
@@ -23,7 +27,8 @@ export type PropsTable<T=any> = {
     styleCaption?: React.CSSProperties | undefined,
     id?: string
     caption?:string|ReactElement;
-    children?: string|React.ReactNode;
+    children?: ReactElement<Column>|ReactElement<HeaderGroup>|ReactElement<ColumnGroup>|ReactElement<RowFooter>|
+              ReactElement<Column>[]|ReactElement<HeaderGroup>[]|ReactElement<ColumnGroup>[]|ReactElement<RowFooter>[];
     rowItems:Array<DataRow>
     onClickRow?:(dataRow:DataRow,e: HTMLTableRowElement)=>void
     onClickColumn?: ( propertyName: string,eventTarget: HTMLTableHeaderCellElement,eventKey?:string,)=>void
@@ -45,7 +50,7 @@ export type PropsColumnGroups ={
     id?:string;
     className?: string;
     style?: React.CSSProperties | undefined,
-    children?:string|React.ReactNode;
+    children?:ReactElement<Column>|ReactElement<Column>[];
 }
 
 export type PropsHeaderGroups ={
@@ -53,9 +58,21 @@ export type PropsHeaderGroups ={
     title?:string|ReactElement
     className?: string;
     style?: React.CSSProperties | undefined,
-    children?:string|React.ReactNode;
+    children?:ReactElement<Column>|ReactElement<Column>[]|ReactElement<ColumnGroup>|ReactElement<ColumnGroup>[];
     eventKey?:string
     onClick?:(eventKey?:string)=>void
+}
+export type CellFooterProperty ={
+    colspan?:number
+    className?: string;
+    style?: React.CSSProperties | undefined,
+    children?:string|React.ReactNode;
+}
+export type RowFooterProperty ={
+    containScroll?:boolean
+    className?: string;
+    style?: React.CSSProperties | undefined,
+    children?:ReactElement<CellFooter>|ReactElement<CellFooter>[]
 }
 
 // export  interface CustomCell{

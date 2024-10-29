@@ -5,6 +5,7 @@ import {ColumnGroup} from "./ColumnGroup";
 import {HeaderGroup} from "./HeaderGroup";
 
 import {appendWidth} from "./utils";
+import {RowFooter} from "../table";
 
 
 type colGroupType = {
@@ -23,18 +24,30 @@ type headerGroupType = {
     onClick?: (eventKey?: string) => void
     width?: string
 }
+type rowFooter = {
+    className?: string;
+    style?: React.CSSProperties | undefined,
+    listCell?: Array<cellFooter>
+}
+type cellFooter = {
+    style?: React.CSSProperties | undefined,
+    colspan?: number;
+    className?: string;
+    content?: string | React.ReactNode;
+}
 
 
 export class Table extends React.Component<PropsTable, any> {
-    private indexClick:number=-1
-    private indexSelect:number=-1
+    private indexClick: number = -1
+    private indexSelect: number = -1
     private heightInner?: number
-    private mapTotal=new Map<number,DataRow>()
+    private mapTotal = new Map<number, DataRow>()
     private refDivWrapper = React.createRef<HTMLDivElement>();
     private refDiwBody = React.createRef<HTMLDivElement>();
     private refDivHeader = React.createRef<HTMLDivElement>();
     private refDivCaption = React.createRef<HTMLDivElement>();
     private list: Array<PropsColumn> = []
+    private listRowFooter: Array<rowFooter> = []
     private MapSelect = new Map<number, DataRow>()
     private listWidth: Array<string | number | undefined> = [];
 
@@ -42,10 +55,12 @@ export class Table extends React.Component<PropsTable, any> {
     private listGroup: Array<colGroupType> = [];
     private listHeaderGroup: Array<headerGroupType> = [];
     private refBody = React.createRef<HTMLTableSectionElement>()
+    private refTableBody = React.createRef<HTMLTableElement>();
 
 
     constructor({props}: { props: Readonly<PropsTable> }) {
         super(props);
+        this.keyUp = this.keyUp.bind(this)
 
 
     }
@@ -55,6 +70,15 @@ export class Table extends React.Component<PropsTable, any> {
     }
 
     private innerRender() {
+        this.listRowFooter.length=0;
+        this.list.length=0;
+        this.listGroup.length=0
+        this.listHeaderGroup.length=0
+        this.mapTotal.clear()
+        this.MapSelect.clear()
+
+        this.indexSelect = -1;
+        this.indexClick = -1
         this.mapTotal.clear()
         if (!this.id)
             this.id = this.props.id ?? key()
@@ -63,10 +87,30 @@ export class Table extends React.Component<PropsTable, any> {
             this.list = [];
             this.listGroup = [];
             this.listHeaderGroup = [];
-            Children.map(this.props.children, (d) => {
-                const element = d as React.ReactElement<any>
-                if (element.type === HeaderGroup) {
 
+            Children.forEach(this.props.children, (d) => {
+                const element = d as React.ReactElement<any>
+
+                if (element.type == RowFooter) {
+
+                    const footer: rowFooter = {
+                        className: element.props.className,
+                        style: element.props.style,
+                        listCell: []
+                    }
+                    Children.map(element.props.children, (cell) => {
+                        footer.listCell?.push({
+                            className: cell.props.className,
+                            style: cell.props.style,
+                            colspan: cell.props.colspan,
+                            content: cell.props.children
+                        })
+                    })
+                    this.listRowFooter.push(footer)
+                    return
+
+                } else
+                if (element.type === HeaderGroup) {
                     const header: headerGroupType = {
                         className: element.props.className,
                         style: element.props.style,
@@ -76,7 +120,6 @@ export class Table extends React.Component<PropsTable, any> {
                         onClick: element.props.onClick,
                         colspan: 0,
                     }
-
                     Children.map(element.props.children, (ff) => {
                         this.innerParserProps(ff, header);
                     })
@@ -84,7 +127,6 @@ export class Table extends React.Component<PropsTable, any> {
                     if (header.colspan && header.colspan > 0) {
                         this.listHeaderGroup.push(header)
                     }
-
 
                 } else {
                     const header = {
@@ -97,8 +139,6 @@ export class Table extends React.Component<PropsTable, any> {
                         })
                     }
                 }
-
-
             })
         }
     }
@@ -152,9 +192,9 @@ export class Table extends React.Component<PropsTable, any> {
 
     public Refresh(callback?: () => void) {
 
-        this.forceUpdate(()=>{
+        this.forceUpdate(() => {
             this.refreshHeight()
-            if(callback){
+            if (callback) {
                 callback()
             }
         })
@@ -166,6 +206,10 @@ export class Table extends React.Component<PropsTable, any> {
         if (d) {
             d.classList.add(this.props.classNameSelection ?? 'row-select')
         }
+    }
+
+    public GetDataRowByIndex(index: number): DataRow | undefined {
+        return this.mapTotal.get(index);
     }
 
 
@@ -187,12 +231,14 @@ export class Table extends React.Component<PropsTable, any> {
                 onClick={(e) => {
 
 
+                    this.indexClick = index
+                    this.indexSelect = index
                     if (this.props.useRowSelection) {
                         if (!e.ctrlKey) {
                             document.querySelectorAll('[data-row-id]').forEach(r => {
                                 this.MapSelect.clear()
+                                r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                                 r.classList.remove(this.props.classNameSelection ?? 'row-select')
-
                                 if (r.getAttribute('data-row-id') === this.id + "_" + index) {
                                     r.classList.add(this.props.classNameSelection ?? 'row-select')
                                     this.MapSelect.set(index, props)
@@ -205,6 +251,7 @@ export class Table extends React.Component<PropsTable, any> {
                                     r.classList.add(this.props.classNameSelection ?? 'row-select')
                                     if (this.MapSelect.has(index)) {
                                         if (this.MapSelect.delete(index)) {
+                                            r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                                             r.classList.remove(this.props.classNameSelection ?? 'row-select')
                                         }
 
@@ -216,9 +263,9 @@ export class Table extends React.Component<PropsTable, any> {
                         }
 
                     }
-                    if(props.onClick){
-                        props.onClick(props,e.currentTarget as HTMLTableRowElement)
-                    }else {
+                    if (props.onClick) {
+                        props.onClick(props, e.currentTarget as HTMLTableRowElement)
+                    } else {
                         if (this.props.onClickRow) {
                             this.props.onClickRow(props, e.currentTarget as HTMLTableRowElement)
                         }
@@ -300,13 +347,107 @@ export class Table extends React.Component<PropsTable, any> {
             this.refDivHeader.current!.style.marginRight = hs + 'px'
         }
         this.refreshHeight()
+        window.addEventListener('keydown', this.keyUp)
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', this.keyUp)
+    }
+
 
     componentDidUpdate() {
         let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
         if (hs > 0) {
             this.refDivHeader.current!.style.marginRight = hs + 'px'
         }
+    }
+
+    validatePosition(t: number) {
+        let top = this.refDiwBody.current!.scrollTop;
+        let h = this.refDiwBody.current!.offsetHeight;
+        if (t < top) {
+            return 1
+        }
+        if (t > top + h) {
+            return 3
+        }
+        return 2
+    }
+
+    keyUp(e: KeyboardEvent) {
+
+
+        if (this.mapTotal.size === 0) return
+
+
+        if (e.ctrlKey && e.key === 'Enter') {
+            this.refBody.current?.rows[this.indexSelect].click()
+        }
+
+        if (e.ctrlKey && e.key === 'ArrowDown') {
+
+
+            if (this.indexSelect < this.mapTotal.size - 1) {
+                this.indexSelect = this.indexSelect + 1;
+                document.querySelectorAll('[data-row-id]').forEach(r => {
+                    r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
+                    if (r.getAttribute('data-row-id') === this.id + "_" + this.indexSelect) {
+                        r.classList.add(this.props.classNameSelection ?? 'row-select-key')
+                        let top = (r as HTMLTableRowElement).offsetTop
+                        let hm = (r as HTMLTableRowElement).offsetHeight
+
+                        switch (this.validatePosition(top + hm)) {
+                            case 1: {
+                                this.refDiwBody.current!.scrollTop = top;
+                                break
+                            }
+                            case 2: {
+                                break
+                            }
+                            case 3: {
+                                const t = this.refDiwBody.current?.scrollTop
+                                this.refDiwBody.current!.scrollTop = t! + hm;
+                                break
+                            }
+                        }
+                    }
+                })
+            }
+
+            this.refBody.current?.click()
+        }
+        if (e.ctrlKey && e.key === 'ArrowUp') {
+            this.refDivWrapper.current?.focus()
+            if (this.indexSelect > 0) {
+                this.indexSelect = this.indexSelect - 1;
+
+                document.querySelectorAll('[data-row-id]').forEach(r => {
+                    r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
+                    if (r.getAttribute('data-row-id') === this.id + "_" + this.indexSelect) {
+                        r.classList.add(this.props.classNameSelection ?? 'row-select-key')
+                        let top = (r as HTMLTableRowElement).offsetTop
+
+
+                        switch (this.validatePosition(top)) {
+                            case 1: {
+                                this.refDiwBody.current!.scrollTop = top;
+                                break
+                            }
+                            case 2: {
+                                break
+                            }
+                            case 3: {
+                                const t = this.refDiwBody.current?.scrollTop
+                                this.refDiwBody.current!.scrollTop = t! + top;
+                                break
+                            }
+                        }
+                    }
+                })
+            }
+            this.refBody.current?.click()
+        }
+
 
     }
 
@@ -337,7 +478,7 @@ export class Table extends React.Component<PropsTable, any> {
     private renderColumnGroup() {
         return <colgroup>
             {
-                this.listGroup.map((col, index) => {
+                this.listGroup.map((col) => {
                     if (!col.span) {
                         return <col key={key()}/>
                     } else {
@@ -356,7 +497,7 @@ export class Table extends React.Component<PropsTable, any> {
             if (this.listHeaderGroup.filter(a => a.colspan !== undefined).length > 0) {
                 return <tr>
                     {
-                        this.listHeaderGroup.map((g, index) => {
+                        this.listHeaderGroup.map((g) => {
                             if (g.colspan) {
                                 let style = g.style;
                                 if (!style) {
@@ -369,7 +510,7 @@ export class Table extends React.Component<PropsTable, any> {
                                     }
 
                                 }
-                                return <th key={'c7' + index}
+                                return <th key={key()}
 
                                            onClick={() => {
                                                if (g.onClick) {
@@ -381,7 +522,7 @@ export class Table extends React.Component<PropsTable, any> {
                                            className={g.className} id={g.id}
                                            colSpan={g.colspan}>{g.title} </th>
                             } else {
-                                return <th style={{width: g.width}}></th>
+                                return <th key={key()} style={{width: g.width}}></th>
                             }
                         })
                     }
@@ -394,10 +535,26 @@ export class Table extends React.Component<PropsTable, any> {
 
     }
 
+    public ShowRowByIndexAndClick(index: number) {
+        if (index < 0 || index > this.mapTotal.size - 1) return
+        const r = this.refBody.current?.rows[index];
+        if (r) {
+            const t = r.offsetTop
+            const h = this.refDiwBody.current!.offsetHeight;
+            this.refDiwBody.current!.scrollTop = t - h / 2
+            r.click()
+        }
+    }
+
+    public GetMapDataRow() {
+        return this.mapTotal
+    }
+
+
     render() {
         this.innerRender()
         return (
-            <div style={this.props.style} id={this.props.id} ref={this.refDivWrapper} className={this.props.className}>
+            <div style={this.props.style} id={this.props.id} ref={this.refDivWrapper} className={this.props.className??'tbl-wrapper'}>
                 {!this.props.caption ? null : (
                     <div className={'tb-caption'} style={this.props.styleCaption} ref={this.refDivCaption}>
                         {
@@ -408,8 +565,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                 )}
                 <div className={'tbl-header'} ref={this.refDivHeader}>
-                    <table style={this.props.styleHeader}>
-
+                    <table style={this.props.styleHeader} ref={this.refTableBody}>
                         <thead>
                         {
                             this.renderHeaderGroup()
@@ -425,7 +581,9 @@ export class Table extends React.Component<PropsTable, any> {
                     </table>
                 </div>
                 <div className={'tbl-content'} ref={this.refDiwBody}>
-                    <table style={this.props.styleBody}>
+                    <table className={'tbl-content-core'}
+
+                        style={this.props.styleBody}>
                         {
                             this.renderColumnGroup()
                         }
@@ -440,7 +598,29 @@ export class Table extends React.Component<PropsTable, any> {
 
                             })
                         }
+
                         </tbody>
+                        <tfoot>
+                        {
+                            this.listRowFooter.map(r => {
+                                return (
+                                    <tr key={key()} className={r.className} style={r.style}>
+                                        {
+                                            r.listCell?.map(c => {
+                                                return <td
+                                                    key={key()}
+                                                    colSpan={c.colspan}
+                                                    className={c.className}
+                                                    style={c.style}>
+                                                    {c.content}
+                                                </td>
+                                            })
+                                        }
+                                    </tr>
+                                )
+                            })
+                        }
+                        </tfoot>
                     </table>
                 </div>
 
@@ -453,12 +633,9 @@ export class Table extends React.Component<PropsTable, any> {
     }
 
     private cellClickE(propertyName: string, props: DataRow, target: EventTarget) {
-
-
         if (this.props.onClickCell) {
             this.props.onClickCell(propertyName, props, target)
         }
-
-
     }
+
 }

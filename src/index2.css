@@ -7,9 +7,10 @@ table{
     background-color: rgba(178, 115, 115, 0.3);
 }
 .tbl-content{
+
     overflow-x:auto;
-    margin-top: 0px;
-    border: 1px solid rgba(255,255,255,0.3);
+    margin-top: 0;
+    border: 1px solid rgba(0, 0, 0, 0.3);
 }
 th{
     padding: 20px 15px;

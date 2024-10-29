@@ -70,10 +70,11 @@ class Edit extends BaseBodyDialog<EdotProperty> {
 }
 
 const listUser: Array<User> = []
-let listReserwe: Array<DataRow>
+let listDataRows: Array<DataRow>
 
 export function GetDataRowList(n: number, list: Array<DataRow>, callback?: (id: string) => void) {
     list.length = 0;
+    listUser.length=0
 
     for (let i = 0; i < n; i++) {
         listUser.push({
@@ -87,7 +88,7 @@ export function GetDataRowList(n: number, list: Array<DataRow>, callback?: (id: 
     listUser.forEach(user => {
         list.push(GetDataRow(user, callback))
     })
-    listReserwe = list
+    listDataRows = list
     return list
 }
 
