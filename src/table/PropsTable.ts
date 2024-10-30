@@ -7,14 +7,14 @@ import {ColumnGroup} from "./ColumnGroup";
 
 
 
-export class DataRow{
+export class DataRow<T =any,V =any>{
     public title?:string;
     public style?: React.CSSProperties | undefined
     public className?: string;
     public onClick?:(dataRow:DataRow,target: EventTarget)=>void
     public id?:string
-    public tag?:any
-    public getView?:()=>any
+    public tag?:T
+    public getView?:()=>V
 }
 
 
@@ -29,13 +29,12 @@ export type PropsTable<T=any> = {
     caption?:string|ReactElement;
     children?: ReactElement<Column>|ReactElement<HeaderGroup>|ReactElement<ColumnGroup>|ReactElement<RowFooter>|
               ReactElement<Column>[]|ReactElement<HeaderGroup>[]|ReactElement<ColumnGroup>[]|ReactElement<RowFooter>[];
-    rowItems:Array<DataRow>
+    rowItems?:Array<DataRow>
     onClickRow?:(dataRow:DataRow,e: HTMLTableRowElement)=>void
     onClickColumn?: ( propertyName: string,eventTarget: HTMLTableHeaderCellElement,eventKey?:string,)=>void
     onClickCell?:(propertyName: string, props: DataRow, target: EventTarget)=>void
     useInnerHTML?:boolean
     useRowSelection?:boolean
-    //useRowMultiSelection?:boolean
     classNameSelection?:string
 }
 export type PropsColumn ={
@@ -66,10 +65,10 @@ export type CellFooterProperty ={
     colspan?:number
     className?: string;
     style?: React.CSSProperties | undefined,
-    children?:string|React.ReactNode;
+    children?:any;
 }
 export type RowFooterProperty ={
-    containScroll?:boolean
+    useScrollContent?:boolean
     className?: string;
     style?: React.CSSProperties | undefined,
     children?:ReactElement<CellFooter>|ReactElement<CellFooter>[]

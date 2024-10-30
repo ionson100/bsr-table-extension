@@ -1,6 +1,6 @@
-import React, {useRef} from 'react';
+import React, {useMemo, useRef} from 'react';
 
-import {Column, Table, DataRow, HeaderGroup, RowFooter, CellFooter} from "./table";
+import {Column, Table, DataRow, HeaderGroup, RowFooter, CellFooter, ColumnGroup} from "./table";
 import {GetDataRowList} from "./fider";
 import { ImCamera } from "react-icons/im";
 
@@ -14,8 +14,10 @@ function App() {
 
     const refTable = useRef<Table>(null)
 
+
     GetDataRowList(1,listData)
-    console.log(listData)
+
+
 
     return (
         <div>
@@ -60,7 +62,7 @@ function App() {
                     onClickCell={(a,b)=>{
                         console.log(a);console.log(b)
                     }}
-                    height={700}
+                    //height={700}
                     style={{width: "70%"}}
                     //styleBody={{background: "rgba(209,203,121,0.94)"}}
                     //styleHeader={{background: "rgba(3,38,108,0.94)", color: "white"}}
@@ -79,31 +81,19 @@ function App() {
                     </HeaderGroup>
 
                     {/*<HeaderGroup style={{background:"#d9d6d6"}} >*/}
-                    {/*    <ColumnGroup style={{background:'rgba(239,232,155,0.94)'}}>*/}
+                        <ColumnGroup style={{background:'rgba(239,232,155,0.94)'}}>
                             <Column propertyName={'age'}>age</Column>
                             <Column propertyName={'profession'}>profession</Column>
-                        {/*</ColumnGroup>*/}
+                        </ColumnGroup>
                     {/*</HeaderGroup>*/}
-                    <RowFooter >
-                        <CellFooter>
 
-                        </CellFooter>
-                        <CellFooter style={{fontSize:20,fontWeight:900,background:"#dcdada"}} colspan={3}>
+                    <RowFooter  >
+
+                        <CellFooter style={{fontSize:20,fontWeight:900,background:"#dcdada"}} colspan={4}>
                             Итого
                         </CellFooter>
                         <CellFooter style={{fontSize:18,fontWeight:900,color:"green",textAlign:"right",background:"#dcdada"}}>
-                            2000 руб
-                        </CellFooter>
-                    </RowFooter>
-                    <RowFooter >
-                        <CellFooter>
-
-                        </CellFooter>
-                        <CellFooter style={{fontSize:20,fontWeight:900,background:"#dcdada"}} colspan={3}>
-                            Итого
-                        </CellFooter>
-                        <CellFooter style={{fontSize:18,fontWeight:900,color:"green",textAlign:"right",background:"#dcdada"}}>
-                            2000 руб
+                            {()=>{return refTable.current?.GetItemsRow()?.length}}
                         </CellFooter>
                     </RowFooter>
 

@@ -28,6 +28,7 @@ type rowFooter = {
     className?: string;
     style?: React.CSSProperties | undefined,
     listCell?: Array<cellFooter>
+    useScrollContent:boolean
 }
 type cellFooter = {
     style?: React.CSSProperties | undefined,
@@ -38,6 +39,7 @@ type cellFooter = {
 
 
 export class Table extends React.Component<PropsTable, any> {
+    private listDataRows:Array<DataRow>=[]
     private indexClick: number = -1
     private indexSelect: number = -1
     private heightInner?: number
@@ -46,6 +48,7 @@ export class Table extends React.Component<PropsTable, any> {
     private refDiwBody = React.createRef<HTMLDivElement>();
     private refDivHeader = React.createRef<HTMLDivElement>();
     private refDivCaption = React.createRef<HTMLDivElement>();
+    private refDivFooter=React.createRef<HTMLDivElement>()
     private list: Array<PropsColumn> = []
     private listRowFooter: Array<rowFooter> = []
     private MapSelect = new Map<number, DataRow>()
@@ -63,6 +66,7 @@ export class Table extends React.Component<PropsTable, any> {
         this.keyUp = this.keyUp.bind(this)
 
 
+
     }
 
     public GetListSelect() {
@@ -76,6 +80,9 @@ export class Table extends React.Component<PropsTable, any> {
         this.listHeaderGroup.length=0
         this.mapTotal.clear()
         this.MapSelect.clear()
+        if(this.listDataRows.length==0&&this.props.rowItems&&this.props.rowItems.length>0){
+            this.listDataRows=this.props.rowItems
+        }
 
         this.indexSelect = -1;
         this.indexClick = -1
@@ -94,6 +101,7 @@ export class Table extends React.Component<PropsTable, any> {
                 if (element.type == RowFooter) {
 
                     const footer: rowFooter = {
+                        useScrollContent:element.props.useScrollContent,
                         className: element.props.className,
                         style: element.props.style,
                         listCell: []
@@ -191,14 +199,9 @@ export class Table extends React.Component<PropsTable, any> {
 
 
     public Refresh(callback?: () => void) {
-
         this.forceUpdate(() => {
-            this.refreshHeight()
-            if (callback) {
-                callback()
-            }
+            this.refreshHeight(callback)
         })
-
     }
 
     public SelectRowsById(id: string) {
@@ -324,30 +327,41 @@ export class Table extends React.Component<PropsTable, any> {
 
     set height(value) {
         this.heightInner = value;
-        this.refreshHeight()
-        this.forceUpdate()
+        this.refreshHeight(()=>{
+            this.forceUpdate()
+        })
+
     }
 
-    private refreshHeight() {
+    private refreshHeight(callback?:()=>void) {
         if (this.heightInner) {
             const w1 = this.refDivCaption.current?.offsetHeight ?? 0
             const w2 = this.refDivHeader.current!.offsetHeight
-            const tw = this.heightInner - w1 - w2
+            const w3=  this.refDivFooter.current?.offsetHeight??0
+            const tw = this.heightInner - w1 - w2-w3
             if (tw > 0) {
                 this.refDiwBody.current!.style.height = tw + 'px'
             }
 
         }
+        if(callback) callback()
     }
 
     componentDidMount() {
         this.heightInner = this.props.height
+
+        this.updateHeightForScroll()
+        this.refreshHeight()
+        window.addEventListener('keydown', this.keyUp)
+    }
+    updateHeightForScroll(){
         let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
         if (hs > 0) {
             this.refDivHeader.current!.style.marginRight = hs + 'px'
+            if(this.refDivFooter.current){
+                this.refDivFooter.current!.style.marginRight=hs+'px'
+            }
         }
-        this.refreshHeight()
-        window.addEventListener('keydown', this.keyUp)
     }
 
     componentWillUnmount() {
@@ -356,10 +370,7 @@ export class Table extends React.Component<PropsTable, any> {
 
 
     componentDidUpdate() {
-        let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
-        if (hs > 0) {
-            this.refDivHeader.current!.style.marginRight = hs + 'px'
-        }
+        this.updateHeightForScroll()
     }
 
     validatePosition(t: number) {
@@ -376,7 +387,7 @@ export class Table extends React.Component<PropsTable, any> {
 
     keyUp(e: KeyboardEvent) {
 
-
+        if(!this.props.useRowSelection) return;
         if (this.mapTotal.size === 0) return
 
 
@@ -546,9 +557,14 @@ export class Table extends React.Component<PropsTable, any> {
         }
     }
 
-    public GetMapDataRow() {
-        return this.mapTotal
+    public GetItemsRow() {
+        return this.listDataRows;
     }
+    public SetItemsRow(list:Array<DataRow>,callback?:()=>void){
+        this.listDataRows=list;
+        this.Refresh(callback)
+    }
+
 
 
     render() {
@@ -592,7 +608,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                         {
 
-                            this.props.rowItems?.map((row, index) => {
+                            this.listDataRows?.map((row, index) => {
 
                                 return this.renderItemRowProperty(row, index)
 
@@ -600,35 +616,86 @@ export class Table extends React.Component<PropsTable, any> {
                         }
 
                         </tbody>
-                        <tfoot>
                         {
-                            this.listRowFooter.map(r => {
-                                return (
-                                    <tr key={key()} className={r.className} style={r.style}>
-                                        {
-                                            r.listCell?.map(c => {
-                                                return <td
-                                                    key={key()}
-                                                    colSpan={c.colspan}
-                                                    className={c.className}
-                                                    style={c.style}>
-                                                    {c.content}
-                                                </td>
-                                            })
-                                        }
-                                    </tr>
-                                )
-                            })
+                            this.renderFootScroll()
                         }
-                        </tfoot>
                     </table>
                 </div>
+                {
+                    this.renderFootNoScroll()
+                }
 
 
             </div>
 
 
         )
+
+    }
+    private renderFootScroll(ignored?:boolean){
+        function getContent(c:any){
+            if(typeof c ==="function"){
+                return c();
+            }
+            return c
+        }
+
+        const res= <tfoot>
+        {
+            this.listRowFooter.map(r => {
+                return (
+                    <tr key={key()} className={r.className} style={r.style}>
+                        {
+                            r.listCell?.map(c => {
+                                return <td
+                                    key={key()}
+                                    colSpan={c.colspan}
+                                    className={c.className}
+                                    style={c.style}>
+                                    {getContent(c.content)}
+                                </td>
+                            })
+                        }
+                    </tr>
+                )
+            })
+        }
+        </tfoot>
+        if(ignored){
+            return  res;
+        }else {
+            if(this.listRowFooter.length>0&&this.listRowFooter[0].useScrollContent){
+                return res;
+            }else {
+                return null;
+            }
+        }
+
+
+    }
+    private renderFootNoScroll(){
+        if(this.listRowFooter.length>0&&!this.listRowFooter[0].useScrollContent){
+            return (
+                <div ref={this.refDivFooter} className={'tbl-footer'}>
+                    <table>
+                        <tbody>
+                        <tr style={{visibility:"collapse"}}>
+                            {
+                                this.listWidth.map((col) => {
+                                    return <td key={key()} style={{width:col}}/>
+                                })
+                            }
+                        </tr>
+                        </tbody>
+
+                        {
+                            this.renderFootScroll(true)
+                        }
+                    </table>
+                </div>
+            )
+        }
+        return null;
 
     }
 

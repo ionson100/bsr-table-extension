@@ -55,10 +55,17 @@ table > tbody > tr > td:first-child {
     color: #0e0e0e;
 }
 
+
 .tbl-content {
-    overflow-x: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     margin-top: -1px;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tbl-footer {
+    background: #e2e5ef;
+    color: #0e0e0e;
 }
 
 .tbl-content-core {
