@@ -335,16 +335,14 @@ export class Table extends React.Component<PropsTable, any> {
 
     private refreshHeight(callback?:()=>void) {
         if (this.heightInner) {
-            setTimeout(()=>{
-                const w1 = this.refDivCaption.current?.offsetHeight ?? 0
-                const w2 = this.refDivHeader.current!.offsetHeight
-                const w3=  this.refDivFooter.current?.offsetHeight??0
-                const tw = this.heightInner! - w1 - w2-w3
-                if (tw > 0) {
-                    this.refDiwBody.current!.style.height = tw + 'px'
-                }
-            },100)
 
+            const w1 = this.refDivCaption.current?.offsetHeight ?? 0
+            const w2 = this.refDivHeader.current!.offsetHeight
+            const w3=  this.refDivFooter.current?.offsetHeight??0
+            const tw = this.heightInner - w1 - w2-w3
+            if (tw > 0) {
+                this.refDiwBody.current!.style.height = tw + 'px'
+            }
 
         }
         if(callback) callback()
@@ -358,16 +356,19 @@ export class Table extends React.Component<PropsTable, any> {
         window.addEventListener('keydown', this.keyUp)
     }
     updateHeightForScroll(){
-        const offset=this.refDiwBody.current!.offsetWidth
-        const client=this.refDiwBody.current!.clientWidth;
-        console.log('offset:'+offset+" client:"+client)
-        let hs =  offset-client
-        if (hs > 0) {
-            this.refDivHeader.current!.style.marginRight = hs + 'px'
-            if(this.refDivFooter.current){
-                this.refDivFooter.current!.style.marginRight=hs+'px'
+        setTimeout(()=>{
+            const offset=this.refDiwBody.current!.offsetWidth
+            const client=this.refDiwBody.current!.clientWidth;
+            console.log('offset:'+offset+" client:"+client)
+            let hs =  offset-client
+            if (hs > 0) {
+                this.refDivHeader.current!.style.marginRight = hs + 'px'
+                if(this.refDivFooter.current){
+                    this.refDivFooter.current!.style.marginRight=hs+'px'
+                }
             }
-        }
+        },100)
+
     }
 
     componentWillUnmount() {
