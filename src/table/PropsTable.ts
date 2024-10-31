@@ -1,7 +1,9 @@
 import React, {ReactElement} from "react";
-import {CellFooter, Column, RowFooter} from "./Column";
+import {Column} from "./Column";
 import {HeaderGroup} from "./HeaderGroup";
 import {ColumnGroup} from "./ColumnGroup";
+import {CellFooter} from "./CellFooter";
+import {RowFooter} from "./RowFooter";
 
 
 

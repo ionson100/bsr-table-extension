@@ -5,7 +5,7 @@ import {ColumnGroup} from "./ColumnGroup";
 import {HeaderGroup} from "./HeaderGroup";
 
 import {appendWidth} from "./utils";
-import {RowFooter} from "../table";
+import {RowFooter} from "./RowFooter";
 
 
 type colGroupType = {
@@ -96,7 +96,7 @@ export class Table extends React.Component<PropsTable, any> {
             this.listHeaderGroup = [];
 
             Children.forEach(this.props.children, (d) => {
-                const element = d as React.ReactElement<any>
+                const element = d as React.ReactElement
 
                 if (element.type == RowFooter) {
 
@@ -153,7 +153,7 @@ export class Table extends React.Component<PropsTable, any> {
 
     private innerParserProps(d: any, header?: headerGroupType) {
 
-        const element = d as React.ReactElement<any>
+        const element = d as React.ReactElement
         if (element.type === ColumnGroup) {
             Children.map(element.props.children, (col) => {
                 this.list.push({

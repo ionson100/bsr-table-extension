@@ -1,0 +1,55 @@
+import React from "react";
+import { DataRow, PropsTable } from "./PropsTable";
+export declare class Table extends React.Component<PropsTable, any> {
+    private listDataRows;
+    private indexClick;
+    private indexSelect;
+    private heightInner?;
+    private mapTotal;
+    private refDivWrapper;
+    private refDiwBody;
+    private refDivHeader;
+    private refDivCaption;
+    private refDivFooter;
+    private list;
+    private listRowFooter;
+    private MapSelect;
+    private listWidth;
+    private id?;
+    private listGroup;
+    private listHeaderGroup;
+    private refBody;
+    private refTableBody;
+    constructor({ props }: {
+        props: Readonly<PropsTable>;
+    });
+    GetListSelect(): {
+        value: number;
+    }[];
+    private innerRender;
+    private innerParserProps;
+    private columnClick;
+    Refresh(callback?: () => void): void;
+    SelectRowsById(id: string): void;
+    GetDataRowByIndex(index: number): DataRow | undefined;
+    private renderItemRowProperty;
+    get height(): number | undefined;
+    set height(value: number | undefined);
+    private refreshHeight;
+    componentDidMount(): void;
+    updateHeightForScroll(): void;
+    componentWillUnmount(): void;
+    componentDidUpdate(): void;
+    validatePosition(t: number): 1 | 3 | 2;
+    keyUp(e: KeyboardEvent): void;
+    private renderHeader;
+    private renderColumnGroup;
+    renderHeaderGroup(): React.JSX.Element | null | undefined;
+    ShowRowByIndexAndClick(index: number): void;
+    GetItemsRow(): DataRow<any, any>[];
+    SetItemsRow(list: Array<DataRow>, callback?: () => void): void;
+    render(): React.JSX.Element;
+    private renderFootScroll;
+    private renderFootNoScroll;
+    private cellClickE;
+}

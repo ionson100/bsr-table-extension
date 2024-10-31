@@ -24,12 +24,12 @@ table > thead > tr:last-child {
 }
 
 .row-select > td > * {
-    background-color: #06a9d5;
+    background-color: #7f8b8e;
     color: white;
 }
 
 .row-select > td {
-    background-color: #06a9d5;
+    background-color: #7f8b8e;
     color: white;
 }
 
@@ -64,6 +64,7 @@ table > tbody > tr > td:first-child {
 }
 
 .tbl-footer {
+    font-weight: bold;
     background: #e2e5ef;
     color: #0e0e0e;
 }
@@ -82,16 +83,18 @@ td {
     padding: 5px 15px;
     text-align: left;
     vertical-align: middle;
-    font-weight: 300;
+
 }
 
 tbody > tr:hover {
-    background-color: #c2ecf8;
+    background-color: #edf1f5;
 }
 
 tbody > tr:active {
-    background-color: #03799a;
+    background-color: #ced0d5;
 }
+
+
 
 ::-webkit-scrollbar {
     width: 6px;
@@ -105,27 +108,20 @@ tbody > tr:active {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-.col {
-    background-color: #25c481;
-}
 
-#d-34 input {
-    font-size: 25px;
-}
 
-.m-footer button {
-    margin: 5px;
-    padding: 5px 20px;
-}
+
+
+
 
 .row-select-key > td > * {
-    background-color: #c2ecf8;
+    background-color: #dce0e2;
     border: 1px red solid;
 
 }
 
 .row-select-key > td {
-    background-color: #c2ecf8;
+    background-color: #dce0e2;
     border: 2px red solid;
 
 }
