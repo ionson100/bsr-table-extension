@@ -410,18 +410,15 @@ var Table = /** @class */ (function (_super) {
         configurable: true
     });
     Table.prototype.refreshHeight = function (callback) {
-        var _this = this;
+        var _a, _b, _c, _d;
         if (this.heightInner) {
-            setTimeout(function () {
-                var _a, _b, _c, _d;
-                var w1 = (_b = (_a = _this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
-                var w2 = _this.refDivHeader.current.offsetHeight;
-                var w3 = (_d = (_c = _this.refDivFooter.current) === null || _c === void 0 ? void 0 : _c.offsetHeight) !== null && _d !== void 0 ? _d : 0;
-                var tw = _this.heightInner - w1 - w2 - w3;
-                if (tw > 0) {
-                    _this.refDiwBody.current.style.height = tw + 'px';
-                }
-            }, 100);
+            var w1 = (_b = (_a = this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
+            var w2 = this.refDivHeader.current.offsetHeight;
+            var w3 = (_d = (_c = this.refDivFooter.current) === null || _c === void 0 ? void 0 : _c.offsetHeight) !== null && _d !== void 0 ? _d : 0;
+            var tw = this.heightInner - w1 - w2 - w3;
+            if (tw > 0) {
+                this.refDiwBody.current.style.height = tw + 'px';
+            }
         }
         if (callback)
             callback();
@@ -433,16 +430,19 @@ var Table = /** @class */ (function (_super) {
         window.addEventListener('keydown', this.keyUp);
     };
     Table.prototype.updateHeightForScroll = function () {
-        var offset = this.refDiwBody.current.offsetWidth;
-        var client = this.refDiwBody.current.clientWidth;
-        console.log('offset:' + offset + " client:" + client);
-        var hs = offset - client;
-        if (hs > 0) {
-            this.refDivHeader.current.style.marginRight = hs + 'px';
-            if (this.refDivFooter.current) {
-                this.refDivFooter.current.style.marginRight = hs + 'px';
+        var _this = this;
+        setTimeout(function () {
+            var offset = _this.refDiwBody.current.offsetWidth;
+            var client = _this.refDiwBody.current.clientWidth;
+            console.log('offset:' + offset + " client:" + client);
+            var hs = offset - client;
+            if (hs > 0) {
+                _this.refDivHeader.current.style.marginRight = hs + 'px';
+                if (_this.refDivFooter.current) {
+                    _this.refDivFooter.current.style.marginRight = hs + 'px';
+                }
             }
-        }
+        }, 100);
     };
     Table.prototype.componentWillUnmount = function () {
         window.removeEventListener('keydown', this.keyUp);
