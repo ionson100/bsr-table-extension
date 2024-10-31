@@ -410,15 +410,18 @@ var Table = /** @class */ (function (_super) {
         configurable: true
     });
     Table.prototype.refreshHeight = function (callback) {
-        var _a, _b, _c, _d;
+        var _this = this;
         if (this.heightInner) {
-            var w1 = (_b = (_a = this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
-            var w2 = this.refDivHeader.current.offsetHeight;
-            var w3 = (_d = (_c = this.refDivFooter.current) === null || _c === void 0 ? void 0 : _c.offsetHeight) !== null && _d !== void 0 ? _d : 0;
-            var tw = this.heightInner - w1 - w2 - w3;
-            if (tw > 0) {
-                this.refDiwBody.current.style.height = tw + 'px';
-            }
+            setTimeout(function () {
+                var _a, _b, _c, _d;
+                var w1 = (_b = (_a = _this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
+                var w2 = _this.refDivHeader.current.offsetHeight;
+                var w3 = (_d = (_c = _this.refDivFooter.current) === null || _c === void 0 ? void 0 : _c.offsetHeight) !== null && _d !== void 0 ? _d : 0;
+                var tw = _this.heightInner - w1 - w2 - w3;
+                if (tw > 0) {
+                    _this.refDiwBody.current.style.height = tw + 'px';
+                }
+            }, 100);
         }
         if (callback)
             callback();

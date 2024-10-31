@@ -335,13 +335,16 @@ export class Table extends React.Component<PropsTable, any> {
 
     private refreshHeight(callback?:()=>void) {
         if (this.heightInner) {
-            const w1 = this.refDivCaption.current?.offsetHeight ?? 0
-            const w2 = this.refDivHeader.current!.offsetHeight
-            const w3=  this.refDivFooter.current?.offsetHeight??0
-            const tw = this.heightInner - w1 - w2-w3
-            if (tw > 0) {
-                this.refDiwBody.current!.style.height = tw + 'px'
-            }
+            setTimeout(()=>{
+                const w1 = this.refDivCaption.current?.offsetHeight ?? 0
+                const w2 = this.refDivHeader.current!.offsetHeight
+                const w3=  this.refDivFooter.current?.offsetHeight??0
+                const tw = this.heightInner! - w1 - w2-w3
+                if (tw > 0) {
+                    this.refDiwBody.current!.style.height = tw + 'px'
+                }
+            },100)
+
 
         }
         if(callback) callback()
