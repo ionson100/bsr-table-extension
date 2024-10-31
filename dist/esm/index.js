@@ -430,7 +430,10 @@ var Table = /** @class */ (function (_super) {
         window.addEventListener('keydown', this.keyUp);
     };
     Table.prototype.updateHeightForScroll = function () {
-        var hs = this.refDiwBody.current.offsetWidth - this.refDiwBody.current.clientWidth;
+        var offset = this.refDiwBody.current.offsetWidth;
+        var client = this.refDiwBody.current.clientWidth;
+        console.log('offset:' + offset + " client:" + client);
+        var hs = offset - client;
         if (hs > 0) {
             this.refDivHeader.current.style.marginRight = hs + 'px';
             if (this.refDivFooter.current) {

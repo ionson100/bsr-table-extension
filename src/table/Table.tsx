@@ -355,7 +355,10 @@ export class Table extends React.Component<PropsTable, any> {
         window.addEventListener('keydown', this.keyUp)
     }
     updateHeightForScroll(){
-        let hs = this.refDiwBody.current!.offsetWidth - this.refDiwBody.current!.clientWidth;
+        const offset=this.refDiwBody.current!.offsetWidth
+        const client=this.refDiwBody.current!.clientWidth;
+        console.log('offset:'+offset+" client:"+client)
+        let hs =  offset-client
         if (hs > 0) {
             this.refDivHeader.current!.style.marginRight = hs + 'px'
             if(this.refDivFooter.current){

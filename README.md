@@ -35,11 +35,11 @@ for (let i = 0; i < 10; i++) {
 }
 
 function getItem() {
-    const list: Array<DataRow>= [];
+    const list: DataRow<User,User>[]= [];
     users.forEach(user => {
         list.push({
             tag:user,
-            getView: ():User => {
+            getView: () => {
                 return user
             }
         })
