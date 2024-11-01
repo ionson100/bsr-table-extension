@@ -160,6 +160,9 @@ var Table = /** @class */ (function (_super) {
     function Table(_a) {
         var props = _a.props;
         var _this = _super.call(this, props) || this;
+        _this.shiftKey = -1;
+        _this.deleteUp = false;
+        _this.deleteDown = false;
         _this.listDataRows = [];
         _this.indexClick = -1;
         _this.indexSelect = -1;
@@ -267,7 +270,7 @@ var Table = /** @class */ (function (_super) {
         if (element.type === ColumnGroup) {
             Children.map(element.props.children, function (col) {
                 _this.list.push({
-                    propertyName: col.props.propertyName,
+                    nameProperty: col.props.nameProperty,
                     style: col.props.style,
                     className: col.props.className,
                     children: col.props.children,
@@ -287,7 +290,7 @@ var Table = /** @class */ (function (_super) {
         else {
             this.listGroup.push({});
             this.list.push({
-                propertyName: element.props.propertyName,
+                nameProperty: element.props.nameProperty,
                 style: element.props.style,
                 className: element.props.className,
                 children: element.props.children,
@@ -298,9 +301,9 @@ var Table = /** @class */ (function (_super) {
             }
         }
     };
-    Table.prototype.columnClick = function (propertyName, eventKey, eventTarget) {
+    Table.prototype.columnClick = function (nameProperty, eventKey, eventTarget) {
         if (this.props.onClickColumn) {
-            this.props.onClickColumn(propertyName, eventTarget, eventKey);
+            this.props.onClickColumn(nameProperty, eventTarget, eventKey);
         }
     };
     Table.prototype.Refresh = function (callback) {
@@ -319,6 +322,11 @@ var Table = /** @class */ (function (_super) {
     Table.prototype.GetDataRowByIndex = function (index) {
         return this.mapTotal.get(index);
     };
+    Table.prototype.onSelect = function () {
+        if (this.props.onSelect) {
+            this.props.onSelect(this.MapSelect);
+        }
+    };
     Table.prototype.renderItemRowProperty = function (props, index) {
         var _this = this;
         this.mapTotal.set(index, this.props);
@@ -327,22 +335,75 @@ var Table = /** @class */ (function (_super) {
                 _this.indexClick = index;
                 _this.indexSelect = index;
                 if (_this.props.useRowSelection) {
-                    if (!e.ctrlKey) {
-                        document.querySelectorAll('[data-row-id]').forEach(function (r) {
-                            var _a, _b, _c;
+                    if (e.shiftKey) {
+                        if (_this.shiftKey == -1) {
                             _this.MapSelect.clear();
+                            document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                                var _a, _b, _c;
+                                r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+                                r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+                                if (r.getAttribute('data-row-index') === index + "") {
+                                    r.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                                    _this.MapSelect.set(index, props);
+                                    _this.deleteUp = false;
+                                }
+                                _this.onSelect();
+                            });
+                            _this.shiftKey = index;
+                        }
+                        else {
+                            var start_1 = 0;
+                            var finish_1 = 0;
+                            if (index > _this.shiftKey) {
+                                start_1 = _this.shiftKey;
+                                finish_1 = index;
+                            }
+                            if (_this.shiftKey > index) {
+                                start_1 = index;
+                                finish_1 = _this.shiftKey;
+                            }
+                            _this.MapSelect.clear();
+                            if (start_1 === finish_1)
+                                return;
+                            document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                                var _a, _b, _c;
+                                r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+                                r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+                                var d = parseInt(r.getAttribute('data-row-index'));
+                                if (d >= start_1 && d <= finish_1) {
+                                    r.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                                    _this.MapSelect.set(d, props);
+                                    _this.deleteUp = false;
+                                }
+                            });
+                            _this.onSelect();
+                            _this.shiftKey = -1;
+                        }
+                        var d = getSelection();
+                        if (d) {
+                            d.removeAllRanges();
+                        }
+                        return false;
+                    }
+                    if (!e.ctrlKey) {
+                        _this.shiftKey = index;
+                        _this.MapSelect.clear();
+                        document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                            var _a, _b, _c;
                             r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                             r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
-                            if (r.getAttribute('data-row-id') === _this.id + "_" + index) {
+                            if (r.getAttribute('data-row-index') === "" + index) {
                                 r.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
                                 _this.MapSelect.set(index, props);
                             }
                         });
+                        //this.onSelect() click
                     }
                     else {
-                        document.querySelectorAll('[data-row-id]').forEach(function (r) {
+                        _this.shiftKey = index;
+                        document.querySelectorAll('[data-row-index]').forEach(function (r) {
                             var _a, _b, _c;
-                            if (r.getAttribute('data-row-id') === _this.id + "_" + index) {
+                            if (r.getAttribute('data-row-index') === "" + index) {
                                 r.classList.add((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select');
                                 if (_this.MapSelect.has(index)) {
                                     if (_this.MapSelect.delete(index)) {
@@ -355,8 +416,11 @@ var Table = /** @class */ (function (_super) {
                                 }
                             }
                         });
+                        _this.onSelect();
                     }
                 }
+                _this.deleteDown = false;
+                _this.deleteUp = false;
                 if (props.onClick) {
                     props.onClick(props, e.currentTarget);
                 }
@@ -365,33 +429,33 @@ var Table = /** @class */ (function (_super) {
                         _this.props.onClickRow(props, e.currentTarget);
                     }
                 }
-            }, "data-row-id": this.id + "_" + index }, this.list.map(function (c, indexD) {
+            }, "data-row-index": index, "data-row-id": this.id }, this.list.map(function (c, indexD) {
             var w = _this.listWidth[indexD];
-            if (c.propertyName === null || c.propertyName === undefined || c.propertyName.trim().length === 0) {
+            if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
                 return React.createElement("td", { onClick: function (e) {
-                        _this.cellClickE(c.propertyName, props, e.currentTarget);
-                    }, "data-propery-name": c.propertyName, style: { width: w }, key: v4() });
+                        _this.cellClickE(c.nameProperty, props, e.currentTarget);
+                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() });
             }
-            var ob = !view ? undefined : view[c.propertyName];
+            var ob = !view ? undefined : view[c.nameProperty];
             if (ob === undefined || ob === null) {
                 return React.createElement("td", { onClick: function (e) {
-                        _this.cellClickE(c.propertyName, props, e.currentTarget);
-                    }, "data-propery-name": c.propertyName, style: { width: w }, key: v4() });
+                        _this.cellClickE(c.nameProperty, props, e.currentTarget);
+                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() });
             }
             else if (typeof ob === 'number') {
                 return React.createElement("td", { onClick: function (e) {
-                        _this.cellClickE(c.propertyName, props, e.currentTarget);
-                    }, "data-propery-name": c.propertyName, style: { width: w }, key: v4() }, "".concat(ob));
+                        _this.cellClickE(c.nameProperty, props, e.currentTarget);
+                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, "".concat(ob));
             }
             else if (typeof ob === 'function') {
                 return React.createElement("td", { onClick: function (e) {
-                        _this.cellClickE(c.propertyName, props, e.currentTarget);
-                    }, "data-propery-name": c.propertyName, style: { width: w }, key: v4() }, ob());
+                        _this.cellClickE(c.nameProperty, props, e.currentTarget);
+                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, ob());
             }
             else {
                 return React.createElement("td", { onClick: function (e) {
-                        _this.cellClickE(c.propertyName, props, e.currentTarget);
-                    }, "data-propery-name": c.propertyName, style: { width: w }, key: v4() }, ob);
+                        _this.cellClickE(c.nameProperty, props, e.currentTarget);
+                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, ob);
             }
         })));
     };
@@ -432,10 +496,7 @@ var Table = /** @class */ (function (_super) {
     Table.prototype.updateHeightForScroll = function () {
         var _this = this;
         setTimeout(function () {
-            var offset = _this.refDiwBody.current.offsetWidth;
-            var client = _this.refDiwBody.current.clientWidth;
-            console.log('offset:' + offset + " client:" + client);
-            var hs = offset - client;
+            var hs = _this.refDiwBody.current.offsetWidth - _this.refDiwBody.current.clientWidth;
             if (hs > 0) {
                 _this.refDivHeader.current.style.marginRight = hs + 'px';
                 if (_this.refDivFooter.current) {
@@ -463,7 +524,7 @@ var Table = /** @class */ (function (_super) {
     };
     Table.prototype.keyUp = function (e) {
         var _this = this;
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         if (!this.props.useRowSelection)
             return;
         if (this.mapTotal.size === 0)
@@ -471,13 +532,74 @@ var Table = /** @class */ (function (_super) {
         if (e.ctrlKey && e.key === 'Enter') {
             (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.rows[this.indexSelect].click();
         }
+        if (e.shiftKey && e.key === "ArrowUp") {
+            if (this.indexSelect > 0) {
+                this.deleteDown = true;
+                var oldIndex = this.indexSelect;
+                this.indexSelect = this.indexSelect - 1;
+                if (this.deleteUp === true) {
+                    if (this.MapSelect.has(oldIndex)) {
+                        if (this.MapSelect.size > 2) {
+                            var el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            if (el) {
+                                el.classList.remove((_b = this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+                                this.MapSelect.delete(oldIndex);
+                                this.onSelect();
+                            }
+                        }
+                        else {
+                            this.deleteUp = false;
+                        }
+                    }
+                }
+                else {
+                    var el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    if (el) {
+                        el.classList.add((_c = this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                        this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
+                        this.onSelect();
+                    }
+                }
+            }
+        }
+        if (e.shiftKey && e.key === "ArrowDown") {
+            if (this.indexSelect < this.mapTotal.size - 1) {
+                this.deleteUp = true;
+                var oldIndex = this.indexSelect;
+                this.indexSelect = this.indexSelect + 1;
+                if (this.deleteDown) {
+                    if (this.MapSelect.has(oldIndex)) {
+                        if (this.MapSelect.size > 2) {
+                            var el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            if (el) {
+                                el.classList.remove((_d = this.props.classNameSelection) !== null && _d !== void 0 ? _d : 'row-select');
+                                this.MapSelect.delete(oldIndex);
+                                this.onSelect();
+                            }
+                        }
+                        else {
+                            this.deleteDown = false;
+                        }
+                    }
+                }
+                else {
+                    var el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    if (el) {
+                        el.classList.add((_e = this.props.classNameSelection) !== null && _e !== void 0 ? _e : 'row-select');
+                        this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
+                        this.onSelect();
+                    }
+                }
+            }
+        }
         if (e.ctrlKey && e.key === 'ArrowDown') {
             if (this.indexSelect < this.mapTotal.size - 1) {
+                this.deleteUp = false;
                 this.indexSelect = this.indexSelect + 1;
-                document.querySelectorAll('[data-row-id]').forEach(function (r) {
+                document.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
-                    if (r.getAttribute('data-row-id') === _this.id + "_" + _this.indexSelect) {
+                    if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
                         r.classList.add((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select-key');
                         var top_1 = r.offsetTop;
                         var hm = r.offsetHeight;
@@ -498,16 +620,17 @@ var Table = /** @class */ (function (_super) {
                     }
                 });
             }
-            (_b = this.refBody.current) === null || _b === void 0 ? void 0 : _b.click();
+            (_f = this.refBody.current) === null || _f === void 0 ? void 0 : _f.click();
         }
         if (e.ctrlKey && e.key === 'ArrowUp') {
-            (_c = this.refDivWrapper.current) === null || _c === void 0 ? void 0 : _c.focus();
+            (_g = this.refDivWrapper.current) === null || _g === void 0 ? void 0 : _g.focus();
             if (this.indexSelect > 0) {
+                this.deleteUp = false;
                 this.indexSelect = this.indexSelect - 1;
-                document.querySelectorAll('[data-row-id]').forEach(function (r) {
+                document.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
-                    if (r.getAttribute('data-row-id') === _this.id + "_" + _this.indexSelect) {
+                    if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
                         r.classList.add((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select-key');
                         var top_2 = r.offsetTop;
                         switch (_this.validatePosition(top_2)) {
@@ -527,7 +650,7 @@ var Table = /** @class */ (function (_super) {
                     }
                 });
             }
-            (_d = this.refBody.current) === null || _d === void 0 ? void 0 : _d.click();
+            (_h = this.refBody.current) === null || _h === void 0 ? void 0 : _h.click();
         }
     };
     Table.prototype.renderHeader = function (c, index) {
@@ -542,7 +665,7 @@ var Table = /** @class */ (function (_super) {
             this.listWidth.push(undefined);
         }
         return (React.createElement("th", { "data-column-index": index, onClick: function (e) {
-                _this.columnClick(c.propertyName, c.eventKey, e.currentTarget);
+                _this.columnClick(c.nameProperty, c.eventKey, e.currentTarget);
             }, key: v4(), className: c.className, style: c.style }, c.children));
     };
     Table.prototype.renderColumnGroup = function () {
@@ -614,7 +737,7 @@ var Table = /** @class */ (function (_super) {
         var _this = this;
         var _a, _b;
         this.innerRender();
-        return (React.createElement("div", { style: this.props.style, id: this.props.id, ref: this.refDivWrapper, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'tbl-wrapper' },
+        return (React.createElement("div", { "data-host-table": 1, style: this.props.style, id: this.props.id, ref: this.refDivWrapper, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'tbl-wrapper' },
             !this.props.caption ? null : (React.createElement("div", { className: 'tb-caption', style: this.props.styleCaption, ref: this.refDivCaption }, this.props.caption)),
             React.createElement("div", { className: 'tbl-header', ref: this.refDivHeader },
                 React.createElement("table", { style: this.props.styleHeader, ref: this.refTableBody },
@@ -670,9 +793,9 @@ var Table = /** @class */ (function (_super) {
         }
         return null;
     };
-    Table.prototype.cellClickE = function (propertyName, props, target) {
+    Table.prototype.cellClickE = function (nameProperty, props, target) {
         if (this.props.onClickCell) {
-            this.props.onClickCell(propertyName, props, target);
+            this.props.onClickCell(nameProperty, props, target);
         }
     };
     return Table;

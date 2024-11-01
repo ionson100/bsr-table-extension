@@ -1,6 +1,9 @@
 import React from "react";
 import { DataRow, PropsTable } from "./PropsTable";
 export declare class Table extends React.Component<PropsTable, any> {
+    private shiftKey;
+    private deleteUp;
+    private deleteDown;
     private listDataRows;
     private indexClick;
     private indexSelect;
@@ -32,6 +35,7 @@ export declare class Table extends React.Component<PropsTable, any> {
     Refresh(callback?: () => void): void;
     SelectRowsById(id: string): void;
     GetDataRowByIndex(index: number): DataRow | undefined;
+    onSelect(): void;
     private renderItemRowProperty;
     get height(): number | undefined;
     set height(value: number | undefined);

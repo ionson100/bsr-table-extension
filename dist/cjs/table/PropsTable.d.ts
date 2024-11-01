@@ -25,15 +25,16 @@ export type PropsTable<T = any> = {
     children?: ReactElement<Column> | ReactElement<HeaderGroup> | ReactElement<ColumnGroup> | ReactElement<RowFooter> | ReactElement<Column>[] | ReactElement<HeaderGroup>[] | ReactElement<ColumnGroup>[] | ReactElement<RowFooter>[];
     rowItems?: Array<DataRow>;
     onClickRow?: (dataRow: DataRow, e: HTMLTableRowElement) => void;
-    onClickColumn?: (propertyName: string, eventTarget: HTMLTableHeaderCellElement, eventKey?: string) => void;
-    onClickCell?: (propertyName: string, props: DataRow, target: EventTarget) => void;
+    onClickColumn?: (nameProperty: string, eventTarget: HTMLTableHeaderCellElement, eventKey?: string) => void;
+    onClickCell?: (nameProperty: string, props: DataRow, target: EventTarget) => void;
     useInnerHTML?: boolean;
     useRowSelection?: boolean;
     classNameSelection?: string;
+    onSelect?: (map: Map<number, DataRow>) => void;
 };
 export type PropsColumn = {
     colspan?: number;
-    propertyName: string;
+    nameProperty: string;
     className?: string;
     eventKey?: string;
     style?: React.CSSProperties | undefined;
@@ -47,7 +48,7 @@ export type PropsColumnGroups = {
 };
 export type PropsHeaderGroups = {
     id?: string;
-    title?: string | ReactElement;
+    caption?: string | ReactElement;
     className?: string;
     style?: React.CSSProperties | undefined;
     children?: ReactElement<Column> | ReactElement<Column>[] | ReactElement<ColumnGroup> | ReactElement<ColumnGroup>[];
