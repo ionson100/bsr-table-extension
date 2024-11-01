@@ -5,7 +5,6 @@ export declare class Table extends React.Component<PropsTable, any> {
     private deleteUp;
     private deleteDown;
     private listDataRows;
-    private indexClick;
     private indexSelect;
     private heightInner?;
     private mapTotal;

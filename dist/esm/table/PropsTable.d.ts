@@ -13,7 +13,7 @@ export declare class DataRow<T = any, V = any> {
     tag?: T;
     getView?: () => V;
 }
-export type PropsTable<T = any> = {
+export type PropsTable = {
     height?: number;
     className?: string;
     style?: React.CSSProperties | undefined;
@@ -25,7 +25,7 @@ export type PropsTable<T = any> = {
     children?: ReactElement<Column> | ReactElement<HeaderGroup> | ReactElement<ColumnGroup> | ReactElement<RowFooter> | ReactElement<Column>[] | ReactElement<HeaderGroup>[] | ReactElement<ColumnGroup>[] | ReactElement<RowFooter>[];
     rowItems?: Array<DataRow>;
     onClickRow?: (dataRow: DataRow, e: HTMLTableRowElement) => void;
-    onClickColumn?: (nameProperty: string, eventTarget: HTMLTableHeaderCellElement, eventKey?: string) => void;
+    onClickColumn?: (nameProperty: string, eventTarget: EventTarget, eventKey?: string) => void;
     onClickCell?: (nameProperty: string, props: DataRow, target: EventTarget) => void;
     useInnerHTML?: boolean;
     useRowSelection?: boolean;

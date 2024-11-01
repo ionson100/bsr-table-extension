@@ -166,7 +166,6 @@ var Table = /** @class */ (function (_super) {
         _this.deleteUp = false;
         _this.deleteDown = false;
         _this.listDataRows = [];
-        _this.indexClick = -1;
         _this.indexSelect = -1;
         _this.mapTotal = new Map();
         _this.refDivWrapper = React.createRef();
@@ -200,11 +199,10 @@ var Table = /** @class */ (function (_super) {
         this.listHeaderGroup.length = 0;
         this.mapTotal.clear();
         this.MapSelect.clear();
-        if (this.listDataRows.length == 0 && this.props.rowItems && this.props.rowItems.length > 0) {
+        if (this.listDataRows.length === 0 && this.props.rowItems && this.props.rowItems.length > 0) {
             this.listDataRows = this.props.rowItems;
         }
         this.indexSelect = -1;
-        this.indexClick = -1;
         this.mapTotal.clear();
         if (!this.id)
             this.id = (_a = this.props.id) !== null && _a !== void 0 ? _a : v4();
@@ -215,7 +213,7 @@ var Table = /** @class */ (function (_super) {
             React.Children.forEach(this.props.children, function (d) {
                 var _a;
                 var element = d;
-                if (element.type == RowFooter) {
+                if (element.type === RowFooter) {
                     var footer_1 = {
                         useScrollContent: element.props.useScrollContent,
                         className: element.props.className,
@@ -327,11 +325,10 @@ var Table = /** @class */ (function (_super) {
         this.mapTotal.set(index, this.props);
         var view = props.getView ? props.getView() : undefined;
         return (React.createElement("tr", { key: v4(), id: props.id, className: props.className, style: props.style, title: props.title, onClick: function (e) {
-                _this.indexClick = index;
                 _this.indexSelect = index;
                 if (_this.props.useRowSelection) {
                     if (e.shiftKey) {
-                        if (_this.shiftKey == -1) {
+                        if (_this.shiftKey === -1) {
                             _this.MapSelect.clear();
                             _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                                 var _a, _b, _c;
@@ -424,7 +421,7 @@ var Table = /** @class */ (function (_super) {
                         _this.props.onClickRow(props, e.currentTarget);
                     }
                 }
-            }, "data-row-index": index, "data-row-id": this.id }, this.list.map(function (c, indexD) {
+            }, "data-row-index": index }, this.list.map(function (c, indexD) {
             var w = _this.listWidth[indexD];
             if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
                 return React.createElement("td", { onClick: function (e) {
@@ -532,7 +529,7 @@ var Table = /** @class */ (function (_super) {
                 this.deleteDown = true;
                 var oldIndex = this.indexSelect;
                 this.indexSelect = this.indexSelect - 1;
-                if (this.deleteUp === true) {
+                if (this.deleteUp) {
                     if (this.MapSelect.has(oldIndex)) {
                         if (this.MapSelect.size > 2) {
                             var el = this.refDiwBody.current.querySelector('[data-row-index="' + oldIndex + '"]');

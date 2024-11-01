@@ -44,7 +44,7 @@ export class Table extends React.Component<PropsTable, any> {
     private deleteDown=false
 
     private listDataRows: Array<DataRow> = []
-    private indexClick: number = -1
+
     private indexSelect: number = -1
     private heightInner?: number
     private mapTotal = new Map<number, DataRow>()
@@ -83,12 +83,11 @@ export class Table extends React.Component<PropsTable, any> {
         this.listHeaderGroup.length = 0
         this.mapTotal.clear()
         this.MapSelect.clear()
-        if (this.listDataRows.length == 0 && this.props.rowItems && this.props.rowItems.length > 0) {
+        if (this.listDataRows.length === 0 && this.props.rowItems && this.props.rowItems.length > 0) {
             this.listDataRows = this.props.rowItems
         }
 
         this.indexSelect = -1;
-        this.indexClick = -1
         this.mapTotal.clear()
         if (!this.id)
             this.id = this.props.id ?? key()
@@ -101,7 +100,7 @@ export class Table extends React.Component<PropsTable, any> {
             Children.forEach(this.props.children, (d) => {
                 const element = d as React.ReactElement
 
-                if (element.type == RowFooter) {
+                if (element.type === RowFooter) {
 
                     const footer: rowFooter = {
                         useScrollContent: element.props.useScrollContent,
@@ -192,7 +191,7 @@ export class Table extends React.Component<PropsTable, any> {
         }
     }
 
-    private columnClick(nameProperty: string, eventKey: string | undefined, eventTarget: HTMLTableHeaderCellElement) {
+    private columnClick(nameProperty: string, eventKey: string | undefined, eventTarget: EventTarget) {
 
         if (this.props.onClickColumn) {
             this.props.onClickColumn(nameProperty, eventTarget, eventKey,)
@@ -237,13 +236,13 @@ export class Table extends React.Component<PropsTable, any> {
                 onClick={(e) => {
 
 
-                    this.indexClick = index
+
                     this.indexSelect = index
                     if (this.props.useRowSelection) {
                         if (e.shiftKey) {
 
 
-                            if (this.shiftKey == -1) {
+                            if (this.shiftKey === -1) {
                                 this.MapSelect.clear()
                                 this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
 
@@ -349,8 +348,7 @@ export class Table extends React.Component<PropsTable, any> {
 
 
                 }}
-                data-row-index={index}
-                data-row-id={this.id}>
+                data-row-index={index}>
                 {
 
 
@@ -479,7 +477,7 @@ export class Table extends React.Component<PropsTable, any> {
                 let oldIndex=this.indexSelect;
                 this.indexSelect = this.indexSelect - 1;
 
-                if(this.deleteUp===true){
+                if(this.deleteUp){
                     if(this.MapSelect.has(oldIndex)){
                         if(this.MapSelect.size>2){
                             const el = this.refDiwBody.current!.querySelector('[data-row-index="' + oldIndex + '"]');
@@ -625,7 +623,7 @@ export class Table extends React.Component<PropsTable, any> {
             <th
                 data-column-index={index}
                 onClick={(e) => {
-                    this.columnClick(c.nameProperty, c.eventKey, e.currentTarget as HTMLTableHeaderCellElement)
+                    this.columnClick(c.nameProperty, c.eventKey, e.currentTarget)
                 }}
                 key={key()}
                 className={c.className}
