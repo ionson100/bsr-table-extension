@@ -18,7 +18,7 @@ type headerGroupType = {
     className?: string;
     style?: React.CSSProperties | undefined,
     colspan?: number;
-    title?: string
+    caption?: string
     id?: string;
     eventKey?: string;
     onClick?: (eventKey?: string) => void
@@ -124,7 +124,7 @@ export class Table extends React.Component<PropsTable, any> {
                     const header: headerGroupType = {
                         className: element.props.className,
                         style: element.props.style,
-                        title: element.props.title,
+                        caption: element.props.caption,
                         id: element.props.id,
                         eventKey: element.props.eventKey,
                         onClick: element.props.onClick,
@@ -684,7 +684,7 @@ export class Table extends React.Component<PropsTable, any> {
                                            style={style}
                                     //style={g.style}
                                            className={g.className} id={g.id}
-                                           colSpan={g.colspan}>{g.title} </th>
+                                           colSpan={g.colspan}>{g.caption} </th>
                             } else {
                                 return <th key={key()} style={{width: g.width}}></th>
                             }

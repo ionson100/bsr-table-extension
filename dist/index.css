@@ -1,4 +1,11 @@
 
+div[data-host-table]  table {
+    border-spacing: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+}
+
 div[data-host-table] table {
     border-spacing: 0;
     width: 100%;

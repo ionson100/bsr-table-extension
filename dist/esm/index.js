@@ -236,7 +236,7 @@ var Table = /** @class */ (function (_super) {
                     var header_1 = {
                         className: element.props.className,
                         style: element.props.style,
-                        title: element.props.title,
+                        caption: element.props.caption,
                         id: element.props.id,
                         eventKey: element.props.eventKey,
                         onClick: element.props.onClick,
@@ -701,7 +701,7 @@ var Table = /** @class */ (function (_super) {
                             }, style: style, 
                             //style={g.style}
                             className: g.className, id: g.id, colSpan: g.colspan },
-                            g.title,
+                            g.caption,
                             " ");
                     }
                     else {
