@@ -56,15 +56,16 @@ type PropsTable<T = any> = {
     children?: ReactElement<Column> | ReactElement<HeaderGroup> | ReactElement<ColumnGroup> | ReactElement<RowFooter> | ReactElement<Column>[] | ReactElement<HeaderGroup>[] | ReactElement<ColumnGroup>[] | ReactElement<RowFooter>[];
     rowItems?: Array<DataRow>;
     onClickRow?: (dataRow: DataRow, e: HTMLTableRowElement) => void;
-    onClickColumn?: (propertyName: string, eventTarget: HTMLTableHeaderCellElement, eventKey?: string) => void;
-    onClickCell?: (propertyName: string, props: DataRow, target: EventTarget) => void;
+    onClickColumn?: (nameProperty: string, eventTarget: HTMLTableHeaderCellElement, eventKey?: string) => void;
+    onClickCell?: (nameProperty: string, props: DataRow, target: EventTarget) => void;
     useInnerHTML?: boolean;
     useRowSelection?: boolean;
     classNameSelection?: string;
+    onSelect?: (map: Map<number, DataRow>) => void;
 };
 type PropsColumn = {
     colspan?: number;
-    propertyName: string;
+    nameProperty: string;
     className?: string;
     eventKey?: string;
     style?: React.CSSProperties | undefined;
@@ -78,7 +79,7 @@ type PropsColumnGroups = {
 };
 type PropsHeaderGroups = {
     id?: string;
-    title?: string | ReactElement;
+    caption?: string | ReactElement;
     className?: string;
     style?: React.CSSProperties | undefined;
     children?: ReactElement<Column> | ReactElement<Column>[] | ReactElement<ColumnGroup> | ReactElement<ColumnGroup>[];
@@ -99,6 +100,9 @@ type RowFooterProperty = {
 };
 
 declare class Table extends React.Component<PropsTable, any> {
+    private shiftKey;
+    private deleteUp;
+    private deleteDown;
     private listDataRows;
     private indexClick;
     private indexSelect;
@@ -130,6 +134,7 @@ declare class Table extends React.Component<PropsTable, any> {
     Refresh(callback?: () => void): void;
     SelectRowsById(id: string): void;
     GetDataRowByIndex(index: number): DataRow | undefined;
+    onSelect(): void;
     private renderItemRowProperty;
     get height(): number | undefined;
     set height(value: number | undefined);

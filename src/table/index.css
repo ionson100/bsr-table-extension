@@ -1,25 +1,38 @@
 
-.tb-caption {
-    padding: 5px 5px;
-    text-align: center;
-    font-weight: 500;
-    text-transform: uppercase;
+div[data-host-table] table {
+    border-spacing: 0;
+    width: 100%;
+    table-layout: fixed;
 }
 
-table {
-    border-spacing: 0
-}
-
-table, th, td {
+div[data-host-table] table, th, td {
+    padding: 5px 15px;
+    vertical-align: middle;
     border: 1px solid black;
     border-collapse: collapse;
 }
 
-table > tbody > tr {
+div[data-host-table] th {
+    text-align: center;
+}
+
+div[data-host-table] td {
+    text-align: left;
+}
+
+div[data-host-table] tbody > tr:hover {
+    background-color: #edf1f5;
+}
+
+div[data-host-table] tbody > tr:active {
+    background-color: #ced0d5;
+}
+
+div[data-host-table] table > tbody > tr {
     cursor: pointer;
 }
 
-table > thead > tr:last-child {
+div[data-host-table] table > thead > tr:last-child {
     cursor: pointer;
 }
 
@@ -33,17 +46,17 @@ table > thead > tr:last-child {
     color: white;
 }
 
-table {
-    width: 100%;
-    table-layout: fixed;
-}
 
-table > thead > tr > th {
+div[data-host-table] table > thead > tr > th {
     border: 1px solid black;
 }
 
-table > tbody > tr > td:first-child {
+
+.tb-caption {
+    padding: 5px 5px;
     text-align: center;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 .tbl-wrapper {
@@ -54,7 +67,6 @@ table > tbody > tr > td:first-child {
     background: #e2e5ef;
     color: #0e0e0e;
 }
-
 
 .tbl-content {
     overflow-y: auto;
@@ -73,45 +85,18 @@ table > tbody > tr > td:first-child {
     background-color: beige;
 }
 
-th {
-    padding: 5px 15px;
-    text-align: center;
-    font-weight: 500;
-}
 
-td {
-    padding: 5px 15px;
-    text-align: left;
-    vertical-align: middle;
-
-}
-
-tbody > tr:hover {
-    background-color: #edf1f5;
-}
-
-tbody > tr:active {
-    background-color: #ced0d5;
-}
-
-
-
-::-webkit-scrollbar {
+div[data-host-table] ::-webkit-scrollbar {
     width: 6px;
 }
 
-::-webkit-scrollbar-track {
+div[data-host-table] ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 
-::-webkit-scrollbar-thumb {
+div[data-host-table] ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
-
-
-
-
-
 
 
 .row-select-key > td > * {
@@ -124,4 +109,12 @@ tbody > tr:active {
     background-color: #dce0e2;
     border: 2px red solid;
 
+}
+
+div[data-host-table] .not-select {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
