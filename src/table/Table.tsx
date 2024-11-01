@@ -206,12 +206,7 @@ export class Table extends React.Component<PropsTable, any> {
         })
     }
 
-    public SelectRowsById(id: string) {
-        const d = document.getElementById(id)
-        if (d) {
-            d.classList.add(this.props.classNameSelection ?? 'row-select')
-        }
-    }
+
 
     public GetDataRowByIndex(index: number): DataRow | undefined {
         return this.mapTotal.get(index);
@@ -250,7 +245,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                             if (this.shiftKey == -1) {
                                 this.MapSelect.clear()
-                                document.querySelectorAll('[data-row-index]').forEach(r => {
+                                this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
 
                                     r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                                     r.classList.remove(this.props.classNameSelection ?? 'row-select')
@@ -281,7 +276,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                                 this.MapSelect.clear()
                                 if (start === finish) return
-                                document.querySelectorAll('[data-row-index]').forEach(r => {
+                                this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
                                     r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                                     r.classList.remove(this.props.classNameSelection ?? 'row-select')
                                     const d = parseInt(r.getAttribute('data-row-index')!)
@@ -310,7 +305,7 @@ export class Table extends React.Component<PropsTable, any> {
                         if (!e.ctrlKey) {
                             this.shiftKey = index;
                             this.MapSelect.clear()
-                            document.querySelectorAll('[data-row-index]').forEach(r => {
+                            this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
 
                                 r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                                 r.classList.remove(this.props.classNameSelection ?? 'row-select')
@@ -324,7 +319,7 @@ export class Table extends React.Component<PropsTable, any> {
                             //this.onSelect() click
                         } else {
                             this.shiftKey = index
-                            document.querySelectorAll('[data-row-index]').forEach(r => {
+                            this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
                                 if (r.getAttribute('data-row-index') === "" + index) {
                                     r.classList.add(this.props.classNameSelection ?? 'row-select')
                                     if (this.MapSelect.has(index)) {
@@ -487,7 +482,7 @@ export class Table extends React.Component<PropsTable, any> {
                 if(this.deleteUp===true){
                     if(this.MapSelect.has(oldIndex)){
                         if(this.MapSelect.size>2){
-                            const el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            const el = this.refDiwBody.current!.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove(this.props.classNameSelection ?? 'row-select')
                                 this.MapSelect.delete(oldIndex)
@@ -500,7 +495,7 @@ export class Table extends React.Component<PropsTable, any> {
 
 
                 }else{
-                    const el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    const el = this.refDiwBody.current!.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add(this.props.classNameSelection ?? 'row-select')
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect])
@@ -521,7 +516,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                     if(this.MapSelect.has(oldIndex)){
                         if(this.MapSelect.size>2){
-                            const el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            const el = this.refDiwBody.current!.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove(this.props.classNameSelection ?? 'row-select')
                                 this.MapSelect.delete(oldIndex)
@@ -534,7 +529,7 @@ export class Table extends React.Component<PropsTable, any> {
 
                 }else{
 
-                    const el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    const el = this.refDiwBody.current!.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add(this.props.classNameSelection ?? 'row-select')
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect])
@@ -552,7 +547,7 @@ export class Table extends React.Component<PropsTable, any> {
             if (this.indexSelect < this.mapTotal.size - 1) {
                 this.deleteUp=false;
                 this.indexSelect = this.indexSelect + 1;
-                document.querySelectorAll('[data-row-index]').forEach(r => {
+                this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
                     r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                     if (r.getAttribute('data-row-index') === "" + this.indexSelect) {
                         r.classList.add(this.props.classNameSelection ?? 'row-select-key')
@@ -585,7 +580,7 @@ export class Table extends React.Component<PropsTable, any> {
                 this.deleteUp=false
                 this.indexSelect = this.indexSelect - 1;
 
-                document.querySelectorAll('[data-row-index]').forEach(r => {
+                this.refDiwBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
                     r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
                     if (r.getAttribute('data-row-index') === "" + this.indexSelect) {
                         r.classList.add(this.props.classNameSelection ?? 'row-select-key')

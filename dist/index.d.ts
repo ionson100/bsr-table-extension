@@ -132,7 +132,6 @@ declare class Table extends React.Component<PropsTable, any> {
     private innerParserProps;
     private columnClick;
     Refresh(callback?: () => void): void;
-    SelectRowsById(id: string): void;
     GetDataRowByIndex(index: number): DataRow | undefined;
     onSelect(): void;
     private renderItemRowProperty;

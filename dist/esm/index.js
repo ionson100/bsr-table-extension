@@ -312,13 +312,6 @@ var Table = /** @class */ (function (_super) {
             _this.refreshHeight(callback);
         });
     };
-    Table.prototype.SelectRowsById = function (id) {
-        var _a;
-        var d = document.getElementById(id);
-        if (d) {
-            d.classList.add((_a = this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select');
-        }
-    };
     Table.prototype.GetDataRowByIndex = function (index) {
         return this.mapTotal.get(index);
     };
@@ -338,7 +331,7 @@ var Table = /** @class */ (function (_super) {
                     if (e.shiftKey) {
                         if (_this.shiftKey == -1) {
                             _this.MapSelect.clear();
-                            document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                            _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                                 var _a, _b, _c;
                                 r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                                 r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -365,7 +358,7 @@ var Table = /** @class */ (function (_super) {
                             _this.MapSelect.clear();
                             if (start_1 === finish_1)
                                 return;
-                            document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                            _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                                 var _a, _b, _c;
                                 r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                                 r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -388,7 +381,7 @@ var Table = /** @class */ (function (_super) {
                     if (!e.ctrlKey) {
                         _this.shiftKey = index;
                         _this.MapSelect.clear();
-                        document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                        _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                             var _a, _b, _c;
                             r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                             r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -401,7 +394,7 @@ var Table = /** @class */ (function (_super) {
                     }
                     else {
                         _this.shiftKey = index;
-                        document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                        _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                             var _a, _b, _c;
                             if (r.getAttribute('data-row-index') === "" + index) {
                                 r.classList.add((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select');
@@ -540,7 +533,7 @@ var Table = /** @class */ (function (_super) {
                 if (this.deleteUp === true) {
                     if (this.MapSelect.has(oldIndex)) {
                         if (this.MapSelect.size > 2) {
-                            var el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            var el = this.refDiwBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove((_b = this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
                                 this.MapSelect.delete(oldIndex);
@@ -553,7 +546,7 @@ var Table = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    var el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    var el = this.refDiwBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add((_c = this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
@@ -570,7 +563,7 @@ var Table = /** @class */ (function (_super) {
                 if (this.deleteDown) {
                     if (this.MapSelect.has(oldIndex)) {
                         if (this.MapSelect.size > 2) {
-                            var el = document.querySelector('[data-row-index="' + oldIndex + '"]');
+                            var el = this.refDiwBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove((_d = this.props.classNameSelection) !== null && _d !== void 0 ? _d : 'row-select');
                                 this.MapSelect.delete(oldIndex);
@@ -583,7 +576,7 @@ var Table = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    var el = document.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    var el = this.refDiwBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add((_e = this.props.classNameSelection) !== null && _e !== void 0 ? _e : 'row-select');
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
@@ -596,7 +589,7 @@ var Table = /** @class */ (function (_super) {
             if (this.indexSelect < this.mapTotal.size - 1) {
                 this.deleteUp = false;
                 this.indexSelect = this.indexSelect + 1;
-                document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                     if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
@@ -627,7 +620,7 @@ var Table = /** @class */ (function (_super) {
             if (this.indexSelect > 0) {
                 this.deleteUp = false;
                 this.indexSelect = this.indexSelect - 1;
-                document.querySelectorAll('[data-row-index]').forEach(function (r) {
+                this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                     if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
