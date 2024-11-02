@@ -108,7 +108,7 @@ declare class Table extends React.Component<PropsTable, any> {
     private heightInner?;
     private mapTotal;
     private refDivWrapper;
-    private refDiwBody;
+    private refDivBody;
     private refDivHeader;
     private refDivCaption;
     private refDivFooter;

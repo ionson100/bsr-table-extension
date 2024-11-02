@@ -38,6 +38,9 @@ div[data-host-table] tbody > tr:active {
 div[data-host-table] table > tbody > tr {
     cursor: pointer;
 }
+div[data-host-table] table > tbody  {
+    background-color: beige;
+}
 
 div[data-host-table] table > thead > tr:last-child {
     cursor: pointer;
@@ -81,6 +84,9 @@ div[data-host-table] table > thead > tr > th {
     margin-top: -1px;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
+.tbl-content-background{
+ background-color: gray;
+}
 
 .tbl-footer {
     font-weight: bold;
@@ -88,13 +94,12 @@ div[data-host-table] table > thead > tr > th {
     color: #0e0e0e;
 }
 
-.tbl-content-core {
-    background-color: beige;
-}
+
 
 
 div[data-host-table] ::-webkit-scrollbar {
     width: 6px;
+    background-color: #e2e5ef;
 }
 
 div[data-host-table] ::-webkit-scrollbar-track {

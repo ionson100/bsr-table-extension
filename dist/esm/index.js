@@ -167,7 +167,7 @@ var Table = /** @class */ (function (_super) {
         _this.indexSelect = -1;
         _this.mapTotal = new Map();
         _this.refDivWrapper = React.createRef();
-        _this.refDiwBody = React.createRef();
+        _this.refDivBody = React.createRef();
         _this.refDivHeader = React.createRef();
         _this.refDivCaption = React.createRef();
         _this.refDivFooter = React.createRef();
@@ -328,7 +328,7 @@ var Table = /** @class */ (function (_super) {
                     if (e.shiftKey) {
                         if (_this.shiftKey === -1) {
                             _this.MapSelect.clear();
-                            _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                            _this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                                 var _a, _b, _c;
                                 r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                                 r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -355,7 +355,7 @@ var Table = /** @class */ (function (_super) {
                             _this.MapSelect.clear();
                             if (start_1 === finish_1)
                                 return;
-                            _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                            _this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                                 var _a, _b, _c;
                                 r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                                 r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -378,7 +378,7 @@ var Table = /** @class */ (function (_super) {
                     if (!e.ctrlKey) {
                         _this.shiftKey = index;
                         _this.MapSelect.clear();
-                        _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                        _this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                             var _a, _b, _c;
                             r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                             r.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
@@ -391,7 +391,7 @@ var Table = /** @class */ (function (_super) {
                     }
                     else {
                         _this.shiftKey = index;
-                        _this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                        _this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                             var _a, _b, _c;
                             if (r.getAttribute('data-row-index') === "" + index) {
                                 r.classList.add((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select');
@@ -464,15 +464,20 @@ var Table = /** @class */ (function (_super) {
         configurable: true
     });
     Table.prototype.refreshHeight = function (callback) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         if (this.heightInner) {
             var w1 = (_b = (_a = this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
             var w2 = this.refDivHeader.current.offsetHeight;
             var w3 = (_d = (_c = this.refDivFooter.current) === null || _c === void 0 ? void 0 : _c.offsetHeight) !== null && _d !== void 0 ? _d : 0;
             var tw = this.heightInner - w1 - w2 - w3;
             if (tw > 0) {
-                this.refDiwBody.current.style.height = tw + 'px';
+                this.refDivBody.current.style.height = tw + 'px';
             }
+        }
+        else {
+            this.refDivBody.current.removeAttribute('style');
+            this.refDivHeader.current.removeAttribute('style');
+            (_e = this.refDivFooter.current) === null || _e === void 0 ? void 0 : _e.removeAttribute('style');
         }
         if (callback)
             callback();
@@ -486,12 +491,17 @@ var Table = /** @class */ (function (_super) {
     Table.prototype.updateHeightForScroll = function () {
         var _this = this;
         setTimeout(function () {
-            var hs = _this.refDiwBody.current.offsetWidth - _this.refDiwBody.current.clientWidth;
+            var _a;
+            var hs = _this.refDivBody.current.offsetWidth - _this.refDivBody.current.clientWidth;
             if (hs > 0) {
                 _this.refDivHeader.current.style.marginRight = hs + 'px';
                 if (_this.refDivFooter.current) {
                     _this.refDivFooter.current.style.marginRight = hs + 'px';
                 }
+            }
+            else {
+                _this.refDivHeader.current.removeAttribute('style');
+                (_a = _this.refDivFooter.current) === null || _a === void 0 ? void 0 : _a.removeAttribute('style');
             }
         }, 100);
     };
@@ -502,8 +512,8 @@ var Table = /** @class */ (function (_super) {
         this.updateHeightForScroll();
     };
     Table.prototype.validatePosition = function (t) {
-        var top = this.refDiwBody.current.scrollTop;
-        var h = this.refDiwBody.current.offsetHeight;
+        var top = this.refDivBody.current.scrollTop;
+        var h = this.refDivBody.current.offsetHeight;
         if (t < top) {
             return 1;
         }
@@ -530,7 +540,7 @@ var Table = /** @class */ (function (_super) {
                 if (this.deleteUp) {
                     if (this.MapSelect.has(oldIndex)) {
                         if (this.MapSelect.size > 2) {
-                            var el = this.refDiwBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
+                            var el = this.refDivBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove((_b = this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
                                 this.MapSelect.delete(oldIndex);
@@ -543,7 +553,7 @@ var Table = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    var el = this.refDiwBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    var el = this.refDivBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add((_c = this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
@@ -560,7 +570,7 @@ var Table = /** @class */ (function (_super) {
                 if (this.deleteDown) {
                     if (this.MapSelect.has(oldIndex)) {
                         if (this.MapSelect.size > 2) {
-                            var el = this.refDiwBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
+                            var el = this.refDivBody.current.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove((_d = this.props.classNameSelection) !== null && _d !== void 0 ? _d : 'row-select');
                                 this.MapSelect.delete(oldIndex);
@@ -573,7 +583,7 @@ var Table = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    var el = this.refDiwBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
+                    var el = this.refDivBody.current.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add((_e = this.props.classNameSelection) !== null && _e !== void 0 ? _e : 'row-select');
                         this.MapSelect.set(this.indexSelect, this.listDataRows[this.indexSelect]);
@@ -586,7 +596,7 @@ var Table = /** @class */ (function (_super) {
             if (this.indexSelect < this.mapTotal.size - 1) {
                 this.deleteUp = false;
                 this.indexSelect = this.indexSelect + 1;
-                this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                     if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
@@ -595,15 +605,15 @@ var Table = /** @class */ (function (_super) {
                         var hm = r.offsetHeight;
                         switch (_this.validatePosition(top_1 + hm)) {
                             case 1: {
-                                _this.refDiwBody.current.scrollTop = top_1;
+                                _this.refDivBody.current.scrollTop = top_1;
                                 break;
                             }
                             case 2: {
                                 break;
                             }
                             case 3: {
-                                var t = (_c = _this.refDiwBody.current) === null || _c === void 0 ? void 0 : _c.scrollTop;
-                                _this.refDiwBody.current.scrollTop = t + hm;
+                                var t = (_c = _this.refDivBody.current) === null || _c === void 0 ? void 0 : _c.scrollTop;
+                                _this.refDivBody.current.scrollTop = t + hm;
                                 break;
                             }
                         }
@@ -617,7 +627,7 @@ var Table = /** @class */ (function (_super) {
             if (this.indexSelect > 0) {
                 this.deleteUp = false;
                 this.indexSelect = this.indexSelect - 1;
-                this.refDiwBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
+                this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (r) {
                     var _a, _b, _c;
                     r.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
                     if (r.getAttribute('data-row-index') === "" + _this.indexSelect) {
@@ -625,15 +635,15 @@ var Table = /** @class */ (function (_super) {
                         var top_2 = r.offsetTop;
                         switch (_this.validatePosition(top_2)) {
                             case 1: {
-                                _this.refDiwBody.current.scrollTop = top_2;
+                                _this.refDivBody.current.scrollTop = top_2;
                                 break;
                             }
                             case 2: {
                                 break;
                             }
                             case 3: {
-                                var t = (_c = _this.refDiwBody.current) === null || _c === void 0 ? void 0 : _c.scrollTop;
-                                _this.refDiwBody.current.scrollTop = t + top_2;
+                                var t = (_c = _this.refDivBody.current) === null || _c === void 0 ? void 0 : _c.scrollTop;
+                                _this.refDivBody.current.scrollTop = t + top_2;
                                 break;
                             }
                         }
@@ -711,8 +721,8 @@ var Table = /** @class */ (function (_super) {
         var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.rows[index];
         if (r) {
             var t = r.offsetTop;
-            var h = this.refDiwBody.current.offsetHeight;
-            this.refDiwBody.current.scrollTop = t - h / 2;
+            var h = this.refDivBody.current.offsetHeight;
+            this.refDivBody.current.scrollTop = t - h / 2;
             r.click();
         }
     };
@@ -736,14 +746,14 @@ var Table = /** @class */ (function (_super) {
                         React.createElement("tr", null, this.list.map(function (c, index) {
                             return _this.renderHeader(c, index);
                         }))))),
-            React.createElement("div", { className: 'tbl-content', ref: this.refDiwBody },
-                React.createElement("table", { className: 'tbl-content-core', style: this.props.styleBody },
-                    this.renderColumnGroup(),
-                    React.createElement("thead", null),
-                    React.createElement("tbody", { ref: this.refBody }, (_b = this.listDataRows) === null || _b === void 0 ? void 0 : _b.map(function (row, index) {
-                        return _this.renderItemRowProperty(row, index);
-                    })),
-                    this.renderFootScroll())),
+            React.createElement("div", { className: 'tbl-content-background' },
+                React.createElement("div", { className: 'tbl-content', ref: this.refDivBody },
+                    React.createElement("table", { style: this.props.styleBody },
+                        this.renderColumnGroup(),
+                        React.createElement("tbody", { ref: this.refBody }, (_b = this.listDataRows) === null || _b === void 0 ? void 0 : _b.map(function (row, index) {
+                            return _this.renderItemRowProperty(row, index);
+                        })),
+                        this.renderFootScroll()))),
             this.renderFootNoScroll()));
     };
     Table.prototype.renderFootScroll = function (ignored) {
