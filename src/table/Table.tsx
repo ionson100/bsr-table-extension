@@ -360,7 +360,7 @@ export class Table extends React.Component<PropsTable, any> {
                         if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
                             return <td onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
-                            }} data-propery-name={c.nameProperty} style={{width: w}} key={key()}></td>
+                            }} data-property-name={c.nameProperty} style={{width: w}} key={key()}></td>
                         }
                         const ob = !view ? undefined : (view as any)[c.nameProperty];
 
@@ -368,22 +368,22 @@ export class Table extends React.Component<PropsTable, any> {
                             return <td onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-propery-name={c.nameProperty} style={{width: w}} key={key()}></td>
+                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}></td>
                         } else if (typeof ob === 'number') {
                             return <td onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-propery-name={c.nameProperty} style={{width: w}} key={key()}>{`${ob}`}</td>
+                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{`${ob}`}</td>
                         } else if (typeof ob === 'function') {
                             return <td onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-propery-name={c.nameProperty} style={{width: w}} key={key()}>{ob()}</td>
+                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{ob()}</td>
                         } else {
                             return <td onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-propery-name={c.nameProperty} style={{width: w}} key={key()}>{ob}</td>
+                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{ob}</td>
                         }
 
 

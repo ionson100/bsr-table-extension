@@ -426,28 +426,28 @@ var Table = /** @class */ (function (_super) {
             if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
                 return React.createElement("td", { onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() });
+                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() });
             }
             var ob = !view ? undefined : view[c.nameProperty];
             if (ob === undefined || ob === null) {
                 return React.createElement("td", { onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() });
+                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() });
             }
             else if (typeof ob === 'number') {
                 return React.createElement("td", { onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, "".concat(ob));
+                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, "".concat(ob));
             }
             else if (typeof ob === 'function') {
                 return React.createElement("td", { onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, ob());
+                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, ob());
             }
             else {
                 return React.createElement("td", { onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-propery-name": c.nameProperty, style: { width: w }, key: v4() }, ob);
+                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, ob);
             }
         })));
     };
