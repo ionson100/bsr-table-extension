@@ -46,7 +46,10 @@ export declare class Table extends React.Component<PropsTable, any> {
     keyUp(e: KeyboardEvent): void;
     private renderHeader;
     private renderHeaderGroup;
-    ShowRowByIndexAndClick(index: number): void;
+    SelectRowByIdAndClick(id: string): void;
+    SelectRowById(id: string[]): void;
+    SelectRowByIndexAndClick(index: number): void;
+    SelectRowByIndex(index: number): void;
     GetItemsRow(): DataRow<any, any>[];
     SetItemsRow(list: Array<DataRow>, callback?: () => void): void;
     render(): React.JSX.Element;

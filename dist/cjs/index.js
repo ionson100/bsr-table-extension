@@ -276,7 +276,7 @@ var Table = /** @class */ (function (_super) {
                     children: col.props.children,
                 });
             });
-            React.Children.map(element.props.children, function (col) {
+            React.Children.map(element.props.children, function () {
                 _this.listGroup.push({
                     className: element.props.className,
                     style: element.props.style,
@@ -717,7 +717,40 @@ var Table = /** @class */ (function (_super) {
             return null;
         }
     };
-    Table.prototype.ShowRowByIndexAndClick = function (index) {
+    Table.prototype.SelectRowByIdAndClick = function (id) {
+        var _a;
+        var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.querySelector('[id="' + id + '"]');
+        if (r) {
+            var t = r.offsetTop;
+            var h = this.refDivBody.current.offsetHeight;
+            this.refDivBody.current.scrollTop = t - h / 2;
+            r.click();
+            this.onSelect();
+        }
+    };
+    Table.prototype.SelectRowById = function (id) {
+        var _this = this;
+        this.MapSelect.clear();
+        this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (row) {
+            var _a, _b, _c;
+            row.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+            row.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+            var idCore = row.getAttribute('id');
+            if (id) {
+                if (id.includes(idCore)) {
+                    row.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                    var index = parseInt(row.getAttribute('data-row-index'));
+                    _this.MapSelect.set(index, _this.listDataRows[index]);
+                    var r = row;
+                    var t = r.offsetTop;
+                    var h = _this.refDivBody.current.offsetHeight;
+                    _this.refDivBody.current.scrollTop = t - h / 2;
+                }
+            }
+        });
+        this.onSelect();
+    };
+    Table.prototype.SelectRowByIndexAndClick = function (index) {
         var _a;
         if (index < 0 || index > this.mapTotal.size - 1)
             return;
@@ -727,6 +760,17 @@ var Table = /** @class */ (function (_super) {
             var h = this.refDivBody.current.offsetHeight;
             this.refDivBody.current.scrollTop = t - h / 2;
             r.click();
+        }
+    };
+    Table.prototype.SelectRowByIndex = function (index) {
+        var _a;
+        if (index < 0 || index > this.mapTotal.size - 1)
+            return;
+        var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.rows[index];
+        if (r) {
+            var t = r.offsetTop;
+            var h = this.refDivBody.current.offsetHeight;
+            this.refDivBody.current.scrollTop = t - h / 2;
         }
     };
     Table.prototype.GetItemsRow = function () {
