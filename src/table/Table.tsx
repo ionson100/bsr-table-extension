@@ -164,7 +164,7 @@ export class Table extends React.Component<PropsTable, any> {
                     children: col.props.children,
                 })
             })
-            Children.map(element.props.children, (col) => {
+            Children.map(element.props.children, () => {
                 this.listGroup.push({
                     className: element.props.className,
                     style: element.props.style,
@@ -695,8 +695,43 @@ export class Table extends React.Component<PropsTable, any> {
         }
 
     }
+    public SelectRowByIdAndClick(id: string) {
+        const r = this.refBody.current?.querySelector('[id="' + id + '"]');
+        if (r) {
+            const t = (r as HTMLTableRowElement).offsetTop
+            const h = this.refDivBody.current!.offsetHeight;
+            this.refDivBody.current!.scrollTop = t - h / 2;
+            (r as HTMLTableRowElement).click()
+            this.onSelect()
 
-    public ShowRowByIndexAndClick(index: number) {
+        }
+    }
+    public SelectRowById(id: string[]) {
+        this.MapSelect.clear()
+        this.refDivBody.current!.querySelectorAll('[data-row-index]').forEach((row)=>{
+            row.classList.remove(this.props.classNameSelection ?? 'row-select-key')
+            row.classList.remove(this.props.classNameSelection ?? 'row-select')
+            const idCore=row.getAttribute('id');
+            if(id){
+                if (id.includes(idCore!)) {
+
+
+                    row.classList.add(this.props.classNameSelection ?? 'row-select')
+                    const index=parseInt(row.getAttribute('data-row-index')!)
+                    this.MapSelect.set(index,this.listDataRows[index])
+
+                    const r=(row as HTMLTableRowElement)
+                    const t = r.offsetTop
+                    const h = this.refDivBody.current!.offsetHeight;
+                    this.refDivBody.current!.scrollTop = t - h / 2
+                }
+            }
+
+        })
+        this.onSelect()
+    }
+
+    public SelectRowByIndexAndClick(index: number) {
         if (index < 0 || index > this.mapTotal.size - 1) return
         const r = this.refBody.current?.rows[index];
         if (r) {
@@ -704,6 +739,15 @@ export class Table extends React.Component<PropsTable, any> {
             const h = this.refDivBody.current!.offsetHeight;
             this.refDivBody.current!.scrollTop = t - h / 2
             r.click()
+        }
+    }
+    public SelectRowByIndex(index: number) {
+        if (index < 0 || index > this.mapTotal.size - 1) return
+        const r = this.refBody.current?.rows[index];
+        if (r) {
+            const t = r.offsetTop
+            const h = this.refDivBody.current!.offsetHeight;
+            this.refDivBody.current!.scrollTop = t - h / 2
         }
     }
 
