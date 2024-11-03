@@ -144,8 +144,7 @@ declare class Table extends React.Component<PropsTable, any> {
     validatePosition(t: number): 1 | 3 | 2;
     keyUp(e: KeyboardEvent): void;
     private renderHeader;
-    private renderColumnGroup;
-    renderHeaderGroup(): React.JSX.Element | null | undefined;
+    private renderHeaderGroup;
     ShowRowByIndexAndClick(index: number): void;
     GetItemsRow(): DataRow<any, any>[];
     SetItemsRow(list: Array<DataRow>, callback?: () => void): void;

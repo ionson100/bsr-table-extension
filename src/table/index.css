@@ -38,8 +38,9 @@ div[data-host-table] tbody > tr:active {
 div[data-host-table] table > tbody > tr {
     cursor: pointer;
 }
-div[data-host-table] table > tbody  {
+div[data-host-table] table > tbody >tr {
     background-color: beige;
+
 }
 
 div[data-host-table] table > thead > tr:last-child {
@@ -74,19 +75,19 @@ div[data-host-table] table > thead > tr > th {
 }
 
 .tbl-header {
-    background: #e2e5ef;
+    background-color: #e2e5ef;
     color: #0e0e0e;
 }
 
 .tbl-content {
+    background-color: gray;
     overflow-y: auto;
     overflow-x: hidden;
     margin-top: -1px;
     border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
-.tbl-content-background{
- background-color: gray;
-}
+
+
 
 .tbl-footer {
     font-weight: bold;

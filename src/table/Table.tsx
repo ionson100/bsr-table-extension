@@ -11,8 +11,7 @@ import {RowFooter} from "./RowFooter";
 type colGroupType = {
     className?: string;
     style?: React.CSSProperties | undefined,
-    span?: number;
-    id?: string;
+
 }
 type headerGroupType = {
     className?: string;
@@ -40,8 +39,8 @@ type cellFooter = {
 
 export class Table extends React.Component<PropsTable, any> {
     private shiftKey = -1
-    private deleteUp=false;
-    private deleteDown=false
+    private deleteUp = false;
+    private deleteDown = false
 
     private listDataRows: Array<DataRow> = []
 
@@ -59,7 +58,7 @@ export class Table extends React.Component<PropsTable, any> {
     private listWidth: Array<string | number | undefined> = [];
 
     private id?: string;
-    private listGroup: Array<colGroupType> = [];
+    private listGroup: Array<colGroupType | undefined> = [];
     private listHeaderGroup: Array<headerGroupType> = [];
     private refBody = React.createRef<HTMLTableSectionElement>()
     private refTableBody = React.createRef<HTMLTableElement>();
@@ -68,7 +67,6 @@ export class Table extends React.Component<PropsTable, any> {
     constructor({props}: { props: Readonly<PropsTable> }) {
         super(props);
         this.keyUp = this.keyUp.bind(this)
-
 
 
     }
@@ -166,19 +164,20 @@ export class Table extends React.Component<PropsTable, any> {
                     children: col.props.children,
                 })
             })
-            this.listGroup.push({
-                id: element.props.id,
-                className: element.props.className,
-                style: element.props.style,
-                span: React.Children.count(element.props.children)
+            Children.map(element.props.children, (col) => {
+                this.listGroup.push({
+                    className: element.props.className,
+                    style: element.props.style,
+                })
             })
+
             if (header) {
                 header.width = appendWidth(header.width, element.props.style?.width)
                 header.colspan! += React.Children.count(element.props.children);
             }
         } else {
 
-            this.listGroup.push({})
+            this.listGroup.push(undefined)
             this.list!.push({
                 nameProperty: element.props.nameProperty,
                 style: element.props.style,
@@ -208,7 +207,6 @@ export class Table extends React.Component<PropsTable, any> {
     }
 
 
-
     public GetDataRowByIndex(index: number): DataRow | undefined {
         return this.mapTotal.get(index);
     }
@@ -226,6 +224,7 @@ export class Table extends React.Component<PropsTable, any> {
         const view = props.getView ? props.getView() : undefined
 
 
+
         return (
 
             <tr
@@ -236,7 +235,6 @@ export class Table extends React.Component<PropsTable, any> {
                 style={props.style}
                 title={props.title}
                 onClick={(e) => {
-
 
 
                     this.indexSelect = index
@@ -253,7 +251,7 @@ export class Table extends React.Component<PropsTable, any> {
                                     if (r.getAttribute('data-row-index') === index + "") {
                                         r.classList.add(this.props.classNameSelection ?? 'row-select')
                                         this.MapSelect.set(index, props)
-                                        this.deleteUp=false;
+                                        this.deleteUp = false;
 
                                     }
                                     this.onSelect()
@@ -284,7 +282,7 @@ export class Table extends React.Component<PropsTable, any> {
                                     if (d >= start && d <= finish) {
                                         r.classList.add(this.props.classNameSelection ?? 'row-select')
                                         this.MapSelect.set(d, props)
-                                        this.deleteUp=false
+                                        this.deleteUp = false
 
                                     }
 
@@ -338,8 +336,8 @@ export class Table extends React.Component<PropsTable, any> {
                         }
 
                     }
-                    this.deleteDown=false;
-                    this.deleteUp=false;
+                    this.deleteDown = false;
+                    this.deleteUp = false;
                     if (props.onClick) {
                         props.onClick(props, e.currentTarget as HTMLTableRowElement)
                     } else {
@@ -356,34 +354,46 @@ export class Table extends React.Component<PropsTable, any> {
 
                     this.list.map((c, indexD) => {
                         const w = this.listWidth[indexD]
+                        let styleGroup = this.listGroup[indexD]?.style
+                        if(!styleGroup){
+                            styleGroup={width:w}
+                        }else {
+
+                                styleGroup = {}
+                                Object.assign(styleGroup, this.listGroup[indexD]?.style)
+                                styleGroup.width = w;
+
+                        }
+
+                        const classGroup = this.listGroup[indexD]?.className
 
                         if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
-                            return <td onClick={(e) => {
+                            return <td className={classGroup} onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
-                            }} data-property-name={c.nameProperty} style={{width: w}} key={key()}></td>
+                            }} data-property-name={c.nameProperty} style={styleGroup} key={key()}></td>
                         }
                         const ob = !view ? undefined : (view as any)[c.nameProperty];
 
                         if (ob === undefined || ob === null) {
-                            return <td onClick={(e) => {
+                            return <td className={classGroup} onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}></td>
+                                       data-property-name={c.nameProperty} style={styleGroup} key={key()}></td>
                         } else if (typeof ob === 'number') {
-                            return <td onClick={(e) => {
+                            return <td className={classGroup} onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{`${ob}`}</td>
+                                       data-property-name={c.nameProperty} style={styleGroup} key={key()}>{`${ob}`}</td>
                         } else if (typeof ob === 'function') {
-                            return <td onClick={(e) => {
+                            return <td className={classGroup} onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{ob()}</td>
+                                       data-property-name={c.nameProperty} style={styleGroup} key={key()}>{ob()}</td>
                         } else {
-                            return <td onClick={(e) => {
+                            return <td className={classGroup} onClick={(e) => {
                                 this.cellClickE(c.nameProperty, props, e.currentTarget)
                             }}
-                                       data-property-name={c.nameProperty} style={{width: w}} key={key()}>{ob}</td>
+                                       data-property-name={c.nameProperty} style={styleGroup} key={key()}>{ob}</td>
                         }
 
 
@@ -418,7 +428,7 @@ export class Table extends React.Component<PropsTable, any> {
                 this.refDivBody.current!.style.height = tw + 'px'
             }
 
-        }else {
+        } else {
             this.refDivBody.current!.removeAttribute('style')
             this.refDivHeader.current!.removeAttribute('style')
             this.refDivFooter.current?.removeAttribute('style')
@@ -442,8 +452,7 @@ export class Table extends React.Component<PropsTable, any> {
                 if (this.refDivFooter.current) {
                     this.refDivFooter.current!.style.marginRight = hs + 'px'
                 }
-            }
-            else{
+            } else {
                 this.refDivHeader.current!.removeAttribute('style')
                 this.refDivFooter.current?.removeAttribute('style')
             }
@@ -483,26 +492,26 @@ export class Table extends React.Component<PropsTable, any> {
         }
         if (e.shiftKey && e.key === "ArrowUp") {
             if (this.indexSelect > 0) {
-                this.deleteDown=true
-                let oldIndex=this.indexSelect;
+                this.deleteDown = true
+                let oldIndex = this.indexSelect;
                 this.indexSelect = this.indexSelect - 1;
 
-                if(this.deleteUp){
-                    if(this.MapSelect.has(oldIndex)){
-                        if(this.MapSelect.size>2){
+                if (this.deleteUp) {
+                    if (this.MapSelect.has(oldIndex)) {
+                        if (this.MapSelect.size > 2) {
                             const el = this.refDivBody.current!.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove(this.props.classNameSelection ?? 'row-select')
                                 this.MapSelect.delete(oldIndex)
                                 this.onSelect()
                             }
-                        }else{
-                            this.deleteUp=false
+                        } else {
+                            this.deleteUp = false
                         }
                     }
 
 
-                }else{
+                } else {
                     const el = this.refDivBody.current!.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
                         el.classList.add(this.props.classNameSelection ?? 'row-select')
@@ -517,25 +526,25 @@ export class Table extends React.Component<PropsTable, any> {
         if (e.shiftKey && e.key === "ArrowDown") {
 
             if (this.indexSelect < this.mapTotal.size - 1) {
-                this.deleteUp=true;
-                let oldIndex=this.indexSelect;
+                this.deleteUp = true;
+                let oldIndex = this.indexSelect;
                 this.indexSelect = this.indexSelect + 1;
-                if(this.deleteDown){
+                if (this.deleteDown) {
 
-                    if(this.MapSelect.has(oldIndex)){
-                        if(this.MapSelect.size>2){
+                    if (this.MapSelect.has(oldIndex)) {
+                        if (this.MapSelect.size > 2) {
                             const el = this.refDivBody.current!.querySelector('[data-row-index="' + oldIndex + '"]');
                             if (el) {
                                 el.classList.remove(this.props.classNameSelection ?? 'row-select')
                                 this.MapSelect.delete(oldIndex)
                                 this.onSelect()
                             }
-                        }else{
-                            this.deleteDown=false
+                        } else {
+                            this.deleteDown = false
                         }
                     }
 
-                }else{
+                } else {
 
                     const el = this.refDivBody.current!.querySelector('[data-row-index="' + this.indexSelect + '"]');
                     if (el) {
@@ -553,7 +562,7 @@ export class Table extends React.Component<PropsTable, any> {
 
 
             if (this.indexSelect < this.mapTotal.size - 1) {
-                this.deleteUp=false;
+                this.deleteUp = false;
                 this.indexSelect = this.indexSelect + 1;
                 this.refDivBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
                     r.classList.remove(this.props.classNameSelection ?? 'row-select-key')
@@ -585,7 +594,7 @@ export class Table extends React.Component<PropsTable, any> {
         if (e.ctrlKey && e.key === 'ArrowUp') {
             this.refDivWrapper.current?.focus()
             if (this.indexSelect > 0) {
-                this.deleteUp=false
+                this.deleteUp = false
                 this.indexSelect = this.indexSelect - 1;
 
                 this.refDivBody.current!.querySelectorAll('[data-row-index]').forEach(r => {
@@ -642,24 +651,9 @@ export class Table extends React.Component<PropsTable, any> {
         )
     }
 
-    private renderColumnGroup() {
-        return <colgroup>
-            {
-                this.listGroup.map((col) => {
-                    if (!col.span) {
-                        return <col key={key()}/>
-                    } else {
-                        return <col key={key()} id={col.id} className={col.className} style={col.style}
-                                    span={col.span}/>
-                    }
-                })
 
-            }
-        </colgroup>
 
-    }
-
-    renderHeaderGroup() {
+    private renderHeaderGroup() {
         if (this.listHeaderGroup.length > 0) {
             if (this.listHeaderGroup.filter(a => a.colspan !== undefined).length > 0) {
                 return <tr>
@@ -753,30 +747,26 @@ export class Table extends React.Component<PropsTable, any> {
                         </thead>
                     </table>
                 </div>
-                <div className={'tbl-content-background'}>
-                    <div className={'tbl-content'} ref={this.refDivBody}>
-                        <table style={this.props.styleBody}>
-                            {
-                                this.renderColumnGroup()
-                            }
 
-                            <tbody ref={this.refBody}>
+                <div className={'tbl-content'} ref={this.refDivBody}>
+                    <table style={this.props.styleBody}>
 
-                            {
+                        <tbody ref={this.refBody}>
 
-                                this.listDataRows?.map((row, index) => {
+                        {
 
-                                    return this.renderItemRowProperty(row, index)
+                            this.listDataRows?.map((row, index) => {
 
-                                })
-                            }
+                                return this.renderItemRowProperty(row, index)
 
-                            </tbody>
-                            {
-                                this.renderFootScroll()
-                            }
-                        </table>
-                    </div>
+                            })
+                        }
+
+                        </tbody>
+                        {
+                            this.renderFootScroll()
+                        }
+                    </table>
                 </div>
 
 
