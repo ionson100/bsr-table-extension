@@ -274,11 +274,11 @@ var Table = /** @class */ (function (_super) {
                     children: col.props.children,
                 });
             });
-            this.listGroup.push({
-                id: element.props.id,
-                className: element.props.className,
-                style: element.props.style,
-                span: React.Children.count(element.props.children)
+            Children.map(element.props.children, function (col) {
+                _this.listGroup.push({
+                    className: element.props.className,
+                    style: element.props.style,
+                });
             });
             if (header) {
                 header.width = appendWidth(header.width, (_a = element.props.style) === null || _a === void 0 ? void 0 : _a.width);
@@ -286,7 +286,7 @@ var Table = /** @class */ (function (_super) {
             }
         }
         else {
-            this.listGroup.push({});
+            this.listGroup.push(undefined);
             this.list.push({
                 nameProperty: element.props.nameProperty,
                 style: element.props.style,
@@ -420,32 +420,43 @@ var Table = /** @class */ (function (_super) {
                     }
                 }
             }, "data-row-index": index }, this.list.map(function (c, indexD) {
+            var _a, _b, _c;
             var w = _this.listWidth[indexD];
+            var styleGroup = (_a = _this.listGroup[indexD]) === null || _a === void 0 ? void 0 : _a.style;
+            if (!styleGroup) {
+                styleGroup = { width: w };
+            }
+            else {
+                styleGroup = {};
+                Object.assign(styleGroup, (_b = _this.listGroup[indexD]) === null || _b === void 0 ? void 0 : _b.style);
+                styleGroup.width = w;
+            }
+            var classGroup = (_c = _this.listGroup[indexD]) === null || _c === void 0 ? void 0 : _c.className;
             if (c.nameProperty === null || c.nameProperty === undefined || c.nameProperty.trim().length === 0) {
-                return React.createElement("td", { onClick: function (e) {
+                return React.createElement("td", { className: classGroup, onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() });
+                    }, "data-property-name": c.nameProperty, style: styleGroup, key: v4() });
             }
             var ob = !view ? undefined : view[c.nameProperty];
             if (ob === undefined || ob === null) {
-                return React.createElement("td", { onClick: function (e) {
+                return React.createElement("td", { className: classGroup, onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() });
+                    }, "data-property-name": c.nameProperty, style: styleGroup, key: v4() });
             }
             else if (typeof ob === 'number') {
-                return React.createElement("td", { onClick: function (e) {
+                return React.createElement("td", { className: classGroup, onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, "".concat(ob));
+                    }, "data-property-name": c.nameProperty, style: styleGroup, key: v4() }, "".concat(ob));
             }
             else if (typeof ob === 'function') {
-                return React.createElement("td", { onClick: function (e) {
+                return React.createElement("td", { className: classGroup, onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, ob());
+                    }, "data-property-name": c.nameProperty, style: styleGroup, key: v4() }, ob());
             }
             else {
-                return React.createElement("td", { onClick: function (e) {
+                return React.createElement("td", { className: classGroup, onClick: function (e) {
                         _this.cellClickE(c.nameProperty, props, e.currentTarget);
-                    }, "data-property-name": c.nameProperty, style: { width: w }, key: v4() }, ob);
+                    }, "data-property-name": c.nameProperty, style: styleGroup, key: v4() }, ob);
             }
         })));
     };
@@ -668,16 +679,6 @@ var Table = /** @class */ (function (_super) {
                 _this.columnClick(c.nameProperty, c.eventKey, e.currentTarget);
             }, key: v4(), className: c.className, style: c.style }, c.children));
     };
-    Table.prototype.renderColumnGroup = function () {
-        return React.createElement("colgroup", null, this.listGroup.map(function (col) {
-            if (!col.span) {
-                return React.createElement("col", { key: v4() });
-            }
-            else {
-                return React.createElement("col", { key: v4(), id: col.id, className: col.className, style: col.style, span: col.span });
-            }
-        }));
-    };
     Table.prototype.renderHeaderGroup = function () {
         if (this.listHeaderGroup.length > 0) {
             if (this.listHeaderGroup.filter(function (a) { return a.colspan !== undefined; }).length > 0) {
@@ -746,14 +747,12 @@ var Table = /** @class */ (function (_super) {
                         React.createElement("tr", null, this.list.map(function (c, index) {
                             return _this.renderHeader(c, index);
                         }))))),
-            React.createElement("div", { className: 'tbl-content-background' },
-                React.createElement("div", { className: 'tbl-content', ref: this.refDivBody },
-                    React.createElement("table", { style: this.props.styleBody },
-                        this.renderColumnGroup(),
-                        React.createElement("tbody", { ref: this.refBody }, (_b = this.listDataRows) === null || _b === void 0 ? void 0 : _b.map(function (row, index) {
-                            return _this.renderItemRowProperty(row, index);
-                        })),
-                        this.renderFootScroll()))),
+            React.createElement("div", { className: 'tbl-content', ref: this.refDivBody },
+                React.createElement("table", { style: this.props.styleBody },
+                    React.createElement("tbody", { ref: this.refBody }, (_b = this.listDataRows) === null || _b === void 0 ? void 0 : _b.map(function (row, index) {
+                        return _this.renderItemRowProperty(row, index);
+                    })),
+                    this.renderFootScroll())),
             this.renderFootNoScroll()));
     };
     Table.prototype.renderFootScroll = function (ignored) {
