@@ -48,8 +48,8 @@ export declare class Table extends React.Component<PropsTable, any> {
     private renderHeaderGroup;
     SelectRowByIdAndClick(id: string): void;
     SelectRowById(id: string[]): void;
+    SelectRowByIndex(indices: number[]): void;
     SelectRowByIndexAndClick(index: number): void;
-    SelectRowByIndex(index: number): void;
     GetItemsRow(): DataRow<any, any>[];
     SetItemsRow(list: Array<DataRow>, callback?: () => void): void;
     render(): React.JSX.Element;

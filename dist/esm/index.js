@@ -475,7 +475,7 @@ var Table = /** @class */ (function (_super) {
         configurable: true
     });
     Table.prototype.refreshHeight = function (callback) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         if (this.heightInner) {
             var w1 = (_b = (_a = this.refDivCaption.current) === null || _a === void 0 ? void 0 : _a.offsetHeight) !== null && _b !== void 0 ? _b : 0;
             var w2 = this.refDivHeader.current.offsetHeight;
@@ -489,6 +489,7 @@ var Table = /** @class */ (function (_super) {
             this.refDivBody.current.removeAttribute('style');
             this.refDivHeader.current.removeAttribute('style');
             (_e = this.refDivFooter.current) === null || _e === void 0 ? void 0 : _e.removeAttribute('style');
+            (_f = this.refDivCaption.current) === null || _f === void 0 ? void 0 : _f.removeAttribute('style');
         }
         if (callback)
             callback();
@@ -502,17 +503,21 @@ var Table = /** @class */ (function (_super) {
     Table.prototype.updateHeightForScroll = function () {
         var _this = this;
         setTimeout(function () {
-            var _a;
+            var _a, _b;
             var hs = _this.refDivBody.current.offsetWidth - _this.refDivBody.current.clientWidth;
             if (hs > 0) {
                 _this.refDivHeader.current.style.marginRight = hs + 'px';
                 if (_this.refDivFooter.current) {
                     _this.refDivFooter.current.style.marginRight = hs + 'px';
                 }
+                if (_this.refDivCaption.current) {
+                    _this.refDivCaption.current.style.marginRight = hs + 'px';
+                }
             }
             else {
                 _this.refDivHeader.current.removeAttribute('style');
                 (_a = _this.refDivFooter.current) === null || _a === void 0 ? void 0 : _a.removeAttribute('style');
+                (_b = _this.refDivCaption.current) === null || _b === void 0 ? void 0 : _b.removeAttribute('style');
             }
         }, 100);
     };
@@ -716,15 +721,22 @@ var Table = /** @class */ (function (_super) {
         }
     };
     Table.prototype.SelectRowByIdAndClick = function (id) {
-        var _a;
-        var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.querySelector('[id="' + id + '"]');
-        if (r) {
-            var t = r.offsetTop;
-            var h = this.refDivBody.current.offsetHeight;
-            this.refDivBody.current.scrollTop = t - h / 2;
-            r.click();
-            this.onSelect();
-        }
+        var _this = this;
+        this.MapSelect.clear();
+        this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (row) {
+            var _a, _b, _c;
+            row.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+            row.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+            if (row.getAttribute('id') === id) {
+                row.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                var r = row;
+                var t = r.offsetTop;
+                var h = _this.refDivBody.current.offsetHeight;
+                _this.refDivBody.current.scrollTop = t - h / 2;
+                row.click();
+            }
+        });
+        this.onSelect();
     };
     Table.prototype.SelectRowById = function (id) {
         var _this = this;
@@ -734,7 +746,7 @@ var Table = /** @class */ (function (_super) {
             row.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
             row.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
             var idCore = row.getAttribute('id');
-            if (id) {
+            if (idCore) {
                 if (id.includes(idCore)) {
                     row.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
                     var index = parseInt(row.getAttribute('data-row-index'));
@@ -748,28 +760,51 @@ var Table = /** @class */ (function (_super) {
         });
         this.onSelect();
     };
-    Table.prototype.SelectRowByIndexAndClick = function (index) {
-        var _a;
-        if (index < 0 || index > this.mapTotal.size - 1)
-            return;
-        var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.rows[index];
-        if (r) {
-            var t = r.offsetTop;
-            var h = this.refDivBody.current.offsetHeight;
-            this.refDivBody.current.scrollTop = t - h / 2;
-            r.click();
-        }
+    Table.prototype.SelectRowByIndex = function (indices) {
+        var _this = this;
+        this.MapSelect.clear();
+        this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (row) {
+            var _a, _b, _c;
+            row.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+            row.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+            var indexCore = row.getAttribute('data-row-index');
+            if (indexCore) {
+                var index = parseInt(indexCore);
+                if (indices.includes(index)) {
+                    row.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                    _this.MapSelect.set(index, _this.listDataRows[index]);
+                    var r = row;
+                    var t = r.offsetTop;
+                    var h = _this.refDivBody.current.offsetHeight;
+                    _this.refDivBody.current.scrollTop = t - h / 2;
+                }
+            }
+        });
+        this.onSelect();
     };
-    Table.prototype.SelectRowByIndex = function (index) {
-        var _a;
+    Table.prototype.SelectRowByIndexAndClick = function (index) {
+        var _this = this;
         if (index < 0 || index > this.mapTotal.size - 1)
             return;
-        var r = (_a = this.refBody.current) === null || _a === void 0 ? void 0 : _a.rows[index];
-        if (r) {
-            var t = r.offsetTop;
-            var h = this.refDivBody.current.offsetHeight;
-            this.refDivBody.current.scrollTop = t - h / 2;
-        }
+        this.MapSelect.clear();
+        this.refDivBody.current.querySelectorAll('[data-row-index]').forEach(function (row) {
+            var _a, _b, _c;
+            row.classList.remove((_a = _this.props.classNameSelection) !== null && _a !== void 0 ? _a : 'row-select-key');
+            row.classList.remove((_b = _this.props.classNameSelection) !== null && _b !== void 0 ? _b : 'row-select');
+            var indexCore = row.getAttribute('data-row-index');
+            if (indexCore) {
+                var indexE = parseInt(indexCore);
+                if (indexE === index) {
+                    row.classList.add((_c = _this.props.classNameSelection) !== null && _c !== void 0 ? _c : 'row-select');
+                    _this.MapSelect.set(index, _this.listDataRows[index]);
+                    var r = row;
+                    var t = r.offsetTop;
+                    var h = _this.refDivBody.current.offsetHeight;
+                    _this.refDivBody.current.scrollTop = t - h / 2;
+                }
+            }
+        });
+        this.onSelect();
     };
     Table.prototype.GetItemsRow = function () {
         return this.listDataRows;
@@ -783,7 +818,8 @@ var Table = /** @class */ (function (_super) {
         var _a, _b;
         this.innerRender();
         return (React.createElement("div", { "data-host-table": 1, style: this.props.style, id: this.props.id, ref: this.refDivWrapper, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'tbl-wrapper' },
-            !this.props.caption ? null : (React.createElement("div", { className: 'tb-caption', style: this.props.styleCaption, ref: this.refDivCaption }, this.props.caption)),
+            !this.props.caption ? null : (React.createElement("div", { ref: this.refDivCaption },
+                React.createElement("div", { className: 'tb-caption', style: this.props.styleCaption }, this.props.caption))),
             React.createElement("div", { className: 'tbl-header', ref: this.refDivHeader },
                 React.createElement("table", { style: this.props.styleHeader, ref: this.refTableBody },
                     React.createElement("thead", null,

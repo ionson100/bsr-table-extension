@@ -58,7 +58,6 @@ type PropsTable = {
     onClickRow?: (dataRow: DataRow, e: HTMLTableRowElement) => void;
     onClickColumn?: (nameProperty: string, eventTarget: EventTarget, eventKey?: string) => void;
     onClickCell?: (nameProperty: string, props: DataRow, target: EventTarget) => void;
-    useInnerHTML?: boolean;
     useRowSelection?: boolean;
     classNameSelection?: string;
     onSelect?: (map: Map<number, DataRow>) => void;
@@ -147,8 +146,8 @@ declare class Table extends React.Component<PropsTable, any> {
     private renderHeaderGroup;
     SelectRowByIdAndClick(id: string): void;
     SelectRowById(id: string[]): void;
+    SelectRowByIndex(indices: number[]): void;
     SelectRowByIndexAndClick(index: number): void;
-    SelectRowByIndex(index: number): void;
     GetItemsRow(): DataRow<any, any>[];
     SetItemsRow(list: Array<DataRow>, callback?: () => void): void;
     render(): React.JSX.Element;
