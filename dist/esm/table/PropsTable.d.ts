@@ -27,7 +27,6 @@ export type PropsTable = {
     onClickRow?: (dataRow: DataRow, e: HTMLTableRowElement) => void;
     onClickColumn?: (nameProperty: string, eventTarget: EventTarget, eventKey?: string) => void;
     onClickCell?: (nameProperty: string, props: DataRow, target: EventTarget) => void;
-    useInnerHTML?: boolean;
     useRowSelection?: boolean;
     classNameSelection?: string;
     onSelect?: (map: Map<number, DataRow>) => void;
