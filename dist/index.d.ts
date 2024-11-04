@@ -49,6 +49,7 @@ type PropsTable = {
     className?: string;
     style?: React.CSSProperties | undefined;
     styleHeader?: React.CSSProperties | undefined;
+    styleHeaderGroup?: React.CSSProperties | undefined;
     styleBody?: React.CSSProperties | undefined;
     styleCaption?: React.CSSProperties | undefined;
     id?: string;
@@ -63,7 +64,6 @@ type PropsTable = {
     onSelect?: (map: Map<number, DataRow>) => void;
 };
 type PropsColumn = {
-    colspan?: number;
     nameProperty: string;
     className?: string;
     eventKey?: string;
@@ -119,7 +119,8 @@ declare class Table extends React.Component<PropsTable, any> {
     private listGroup;
     private listHeaderGroup;
     private refBody;
-    private refTableBody;
+    private refTableHeader;
+    private refTableHeaderGroup;
     constructor({ props }: {
         props: Readonly<PropsTable>;
     });
@@ -127,6 +128,8 @@ declare class Table extends React.Component<PropsTable, any> {
         value: number;
     }[];
     private innerRender;
+    private mapSimpleCell;
+    private mapColumnCroup;
     private innerParserProps;
     private columnClick;
     Refresh(callback?: () => void): void;

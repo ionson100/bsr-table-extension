@@ -61,7 +61,8 @@ export class Table extends React.Component<PropsTable, any> {
     private listGroup: Array<colGroupType | undefined> = [];
     private listHeaderGroup: Array<headerGroupType> = [];
     private refBody = React.createRef<HTMLTableSectionElement>()
-    private refTableBody = React.createRef<HTMLTableElement>();
+    private refTableHeader = React.createRef<HTMLTableElement>();
+    private refTableHeaderGroup = React.createRef<HTMLTableElement>();
 
 
     constructor({props}: { props: Readonly<PropsTable> }) {
@@ -129,27 +130,81 @@ export class Table extends React.Component<PropsTable, any> {
                         onClick: element.props.onClick,
                         colspan: 0,
                     }
-                    Children.map(element.props.children, (ff) => {
-                        this.innerParserProps(ff, header);
+                    Children.map(element.props.children, (d) => {
+                        const ele = d as React.ReactElement
+                        if (ele.type === ColumnGroup) {
+                            this.mapColumnCroup(ele, header)
+                            header.colspan! += 1
+                        } else {
+
+                            this.mapSimpleCell(ele, header)
+                            header.colspan! += 1
+
+                        }
+
                     })
 
-                    if (header.colspan && header.colspan > 0) {
-                        this.listHeaderGroup.push(header)
-                    }
+                    this.listHeaderGroup.push(header)
+
+                } else if (element.type === ColumnGroup) {
+                    this.mapColumnCroup(element);
+
 
                 } else {
-                    const header = {
-                        colspan: 0
-                    }
-                    this.innerParserProps(d, header);
-                    for (let i = 0; i < header.colspan; i++) {
-                        this.listHeaderGroup.push({
-                            width: element.props.style?.width
-                        })
-                    }
+                    this.mapSimpleCell(element);
+
+
                 }
             })
         }
+        this.listHeaderGroup.forEach(group => {
+            console.log(group)
+        })
+
+    }
+
+    private mapSimpleCell(element: React.ReactElement<any, string | React.JSXElementConstructor<any>>, header?: headerGroupType) {
+        this.list.push({
+            nameProperty: element.props.nameProperty,
+            style: element.props.style,
+            className: element.props.className,
+            children: element.props.children,
+        })
+        this.listGroup.push(undefined)
+        this.listWidth.push(appendWidth(undefined, element.props.style?.width));
+        if (!header) {
+            this.listHeaderGroup.push({
+                width: appendWidth(undefined, element.props.style?.width)
+            })
+        } else {
+            header.width = appendWidth(header.width, element.props.style?.width)
+        }
+
+    }
+
+    private mapColumnCroup(element: React.ReactElement<any, string | React.JSXElementConstructor<any>>, header?: headerGroupType) {
+        Children.map(element.props.children, (col) => {
+            this.list.push({
+                nameProperty: col.props.nameProperty,
+                style: col.props.style,
+                className: col.props.className,
+                children: col.props.children,
+            })
+            this.listWidth.push(appendWidth(undefined, col.props.style?.width));
+            this.listGroup.push({
+                className: element.props.className,
+                style: element.props.style,
+            })
+            if (!header) {
+                this.listHeaderGroup.push({
+                    width: appendWidth(undefined, col.props.style?.width)
+                })
+            } else {
+                header.width = appendWidth(header.width, col.props.style?.width)
+            }
+
+
+        })
     }
 
     private innerParserProps(d: any, header?: headerGroupType) {
@@ -172,7 +227,9 @@ export class Table extends React.Component<PropsTable, any> {
             })
 
             if (header) {
-                header.width = appendWidth(header.width, element.props.style?.width)
+
+                header.width = appendWidth(header.width, element.props.style?.width);
+                console.log(header.width)
                 header.colspan! += React.Children.count(element.props.children);
             }
         } else {
@@ -452,7 +509,7 @@ export class Table extends React.Component<PropsTable, any> {
                 if (this.refDivFooter.current) {
                     this.refDivFooter.current!.style.marginRight = hs + 'px'
                 }
-                if(this.refDivCaption.current) {
+                if (this.refDivCaption.current) {
                     this.refDivCaption.current!.style.marginRight = hs + 'px'
                 }
             } else {
@@ -658,7 +715,8 @@ export class Table extends React.Component<PropsTable, any> {
 
     private renderHeaderGroup() {
         if (this.listHeaderGroup.length > 0) {
-            if (this.listHeaderGroup.filter(a => a.colspan !== undefined).length > 0) {
+            const run = this.listHeaderGroup.filter(a => a.colspan !== undefined).filter(s => s.colspan! > 0).length > 0
+            if (run) {
                 return <tr>
                     {
                         this.listHeaderGroup.map((g) => {
@@ -775,9 +833,9 @@ export class Table extends React.Component<PropsTable, any> {
             row.classList.remove(this.props.classNameSelection ?? 'row-select-key')
             row.classList.remove(this.props.classNameSelection ?? 'row-select')
             const indexCore = row.getAttribute('data-row-index');
-            if(indexCore){
+            if (indexCore) {
                 const indexE = parseInt(indexCore)
-                if(indexE ===index){
+                if (indexE === index) {
                     row.classList.add(this.props.classNameSelection ?? 'row-select')
                     this.MapSelect.set(index, this.listDataRows[index])
                     const r = (row as HTMLTableRowElement)
@@ -790,9 +848,6 @@ export class Table extends React.Component<PropsTable, any> {
         })
         this.onSelect()
     }
-
-
-
 
 
     public GetItemsRow() {
@@ -822,11 +877,17 @@ export class Table extends React.Component<PropsTable, any> {
 
                 )}
                 <div className={'tbl-header'} ref={this.refDivHeader}>
-                    <table style={this.props.styleHeader} ref={this.refTableBody}>
-                    <thead>
+                    <table data-theader={1}  style={this.props.styleHeaderGroup} ref={this.refTableHeaderGroup}>
+                        <thead>
                         {
                             this.renderHeaderGroup()
                         }
+                        </thead>
+                    </table>
+                    <table style={this.props.styleHeader} ref={this.refTableHeader}>
+
+                        <thead>
+
                         <tr>
                             {
                                 this.list.map((c, index) => {

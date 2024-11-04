@@ -18,6 +18,7 @@ export type PropsTable = {
     className?: string;
     style?: React.CSSProperties | undefined;
     styleHeader?: React.CSSProperties | undefined;
+    styleHeaderGroup?: React.CSSProperties | undefined;
     styleBody?: React.CSSProperties | undefined;
     styleCaption?: React.CSSProperties | undefined;
     id?: string;
@@ -32,7 +33,6 @@ export type PropsTable = {
     onSelect?: (map: Map<number, DataRow>) => void;
 };
 export type PropsColumn = {
-    colspan?: number;
     nameProperty: string;
     className?: string;
     eventKey?: string;

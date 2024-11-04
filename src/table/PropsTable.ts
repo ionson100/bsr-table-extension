@@ -25,6 +25,7 @@ export type PropsTable = {
     className?: string;
     style?: React.CSSProperties | undefined,
     styleHeader?: React.CSSProperties | undefined,
+    styleHeaderGroup?: React.CSSProperties | undefined,
     styleBody?: React.CSSProperties | undefined,
     styleCaption?: React.CSSProperties | undefined,
     id?: string
@@ -35,12 +36,13 @@ export type PropsTable = {
     onClickRow?:(dataRow:DataRow,e: HTMLTableRowElement)=>void
     onClickColumn?: (nameProperty: string, eventTarget: EventTarget, eventKey?:string,)=>void
     onClickCell?:(nameProperty: string, props: DataRow, target: EventTarget)=>void
+
     useRowSelection?:boolean
     classNameSelection?:string
     onSelect?:(map:Map<number,DataRow>)=>void
 }
 export type PropsColumn ={
-    colspan?:number
+   // colspan?:number
     nameProperty:string
     className?: string;
     eventKey?:string

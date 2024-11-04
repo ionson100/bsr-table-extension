@@ -19,6 +19,7 @@ div[data-host-table] table, th, td {
     border-collapse: collapse;
 }
 
+
 div[data-host-table] th {
     text-align: center;
 }
@@ -58,8 +59,14 @@ div[data-host-table] table > thead > tr:last-child {
 }
 
 
-div[data-host-table] table > thead > tr > th {
-    border: 1px solid black;
+/*div[data-host-table] table > thead > tr > th {*/
+/*    border: 1px solid black;*/
+/*}*/
+
+div[data-host-table]  table[data-theader] {
+
+
+
 }
 
 
@@ -75,6 +82,7 @@ div[data-host-table] table > thead > tr > th {
 }
 
 .tbl-header {
+    border-spacing: 0;
     background-color: #e2e5ef;
     color: #0e0e0e;
 }
