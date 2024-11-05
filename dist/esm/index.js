@@ -178,7 +178,8 @@ var Table = /** @class */ (function (_super) {
         _this.listGroup = [];
         _this.listHeaderGroup = [];
         _this.refBody = React.createRef();
-        _this.refTableBody = React.createRef();
+        _this.refTableHeader = React.createRef();
+        _this.refTableHeaderGroup = React.createRef();
         _this.keyUp = _this.keyUp.bind(_this);
         return _this;
     }
@@ -209,7 +210,6 @@ var Table = /** @class */ (function (_super) {
             this.listGroup = [];
             this.listHeaderGroup = [];
             Children.forEach(this.props.children, function (d) {
-                var _a;
                 var element = d;
                 if (element.type === RowFooter) {
                     var footer_1 = {
@@ -240,26 +240,74 @@ var Table = /** @class */ (function (_super) {
                         onClick: element.props.onClick,
                         colspan: 0,
                     };
-                    Children.map(element.props.children, function (ff) {
-                        _this.innerParserProps(ff, header_1);
+                    Children.map(element.props.children, function (d) {
+                        var ele = d;
+                        if (ele.type === ColumnGroup) {
+                            _this.mapColumnCroup(ele, header_1);
+                            header_1.colspan += 1;
+                        }
+                        else {
+                            _this.mapSimpleCell(ele, header_1);
+                            header_1.colspan += 1;
+                        }
                     });
-                    if (header_1.colspan && header_1.colspan > 0) {
-                        _this.listHeaderGroup.push(header_1);
-                    }
+                    _this.listHeaderGroup.push(header_1);
+                }
+                else if (element.type === ColumnGroup) {
+                    _this.mapColumnCroup(element);
                 }
                 else {
-                    var header = {
-                        colspan: 0
-                    };
-                    _this.innerParserProps(d, header);
-                    for (var i = 0; i < header.colspan; i++) {
-                        _this.listHeaderGroup.push({
-                            width: (_a = element.props.style) === null || _a === void 0 ? void 0 : _a.width
-                        });
-                    }
+                    _this.mapSimpleCell(element);
                 }
             });
         }
+        this.listHeaderGroup.forEach(function (group) {
+            console.log(group);
+        });
+    };
+    Table.prototype.mapSimpleCell = function (element, header) {
+        var _a, _b, _c;
+        this.list.push({
+            nameProperty: element.props.nameProperty,
+            style: element.props.style,
+            className: element.props.className,
+            children: element.props.children,
+        });
+        this.listGroup.push(undefined);
+        this.listWidth.push(appendWidth(undefined, (_a = element.props.style) === null || _a === void 0 ? void 0 : _a.width));
+        if (!header) {
+            this.listHeaderGroup.push({
+                width: appendWidth(undefined, (_b = element.props.style) === null || _b === void 0 ? void 0 : _b.width)
+            });
+        }
+        else {
+            header.width = appendWidth(header.width, (_c = element.props.style) === null || _c === void 0 ? void 0 : _c.width);
+        }
+    };
+    Table.prototype.mapColumnCroup = function (element, header) {
+        var _this = this;
+        Children.map(element.props.children, function (col) {
+            var _a, _b, _c;
+            _this.list.push({
+                nameProperty: col.props.nameProperty,
+                style: col.props.style,
+                className: col.props.className,
+                children: col.props.children,
+            });
+            _this.listWidth.push(appendWidth(undefined, (_a = col.props.style) === null || _a === void 0 ? void 0 : _a.width));
+            _this.listGroup.push({
+                className: element.props.className,
+                style: element.props.style,
+            });
+            if (!header) {
+                _this.listHeaderGroup.push({
+                    width: appendWidth(undefined, (_b = col.props.style) === null || _b === void 0 ? void 0 : _b.width)
+                });
+            }
+            else {
+                header.width = appendWidth(header.width, (_c = col.props.style) === null || _c === void 0 ? void 0 : _c.width);
+            }
+        });
     };
     Table.prototype.innerParserProps = function (d, header) {
         var _this = this;
@@ -282,6 +330,7 @@ var Table = /** @class */ (function (_super) {
             });
             if (header) {
                 header.width = appendWidth(header.width, (_a = element.props.style) === null || _a === void 0 ? void 0 : _a.width);
+                console.log(header.width);
                 header.colspan += React.Children.count(element.props.children);
             }
         }
@@ -686,7 +735,8 @@ var Table = /** @class */ (function (_super) {
     };
     Table.prototype.renderHeaderGroup = function () {
         if (this.listHeaderGroup.length > 0) {
-            if (this.listHeaderGroup.filter(function (a) { return a.colspan !== undefined; }).length > 0) {
+            var run = this.listHeaderGroup.filter(function (a) { return a.colspan !== undefined; }).filter(function (s) { return s.colspan > 0; }).length > 0;
+            if (run) {
                 return React.createElement("tr", null, this.listHeaderGroup.map(function (g) {
                     if (g.colspan) {
                         var style = g.style;
@@ -821,9 +871,10 @@ var Table = /** @class */ (function (_super) {
             !this.props.caption ? null : (React.createElement("div", { ref: this.refDivCaption },
                 React.createElement("div", { className: 'tb-caption', style: this.props.styleCaption }, this.props.caption))),
             React.createElement("div", { className: 'tbl-header', ref: this.refDivHeader },
-                React.createElement("table", { style: this.props.styleHeader, ref: this.refTableBody },
+                React.createElement("table", { "data-theader": 1, style: this.props.styleHeaderGroup, ref: this.refTableHeaderGroup },
+                    React.createElement("thead", null, this.renderHeaderGroup())),
+                React.createElement("table", { style: this.props.styleHeader, ref: this.refTableHeader },
                     React.createElement("thead", null,
-                        this.renderHeaderGroup(),
                         React.createElement("tr", null, this.list.map(function (c, index) {
                             return _this.renderHeader(c, index);
                         }))))),

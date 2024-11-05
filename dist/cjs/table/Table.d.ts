@@ -21,7 +21,8 @@ export declare class Table extends React.Component<PropsTable, any> {
     private listGroup;
     private listHeaderGroup;
     private refBody;
-    private refTableBody;
+    private refTableHeader;
+    private refTableHeaderGroup;
     constructor({ props }: {
         props: Readonly<PropsTable>;
     });
@@ -29,6 +30,8 @@ export declare class Table extends React.Component<PropsTable, any> {
         value: number;
     }[];
     private innerRender;
+    private mapSimpleCell;
+    private mapColumnCroup;
     private innerParserProps;
     private columnClick;
     Refresh(callback?: () => void): void;
