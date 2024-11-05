@@ -207,47 +207,7 @@ export class Table extends React.Component<PropsTable, any> {
         })
     }
 
-    private innerParserProps(d: any, header?: headerGroupType) {
 
-        const element = d as React.ReactElement
-        if (element.type === ColumnGroup) {
-            Children.map(element.props.children, (col) => {
-                this.list.push({
-                    nameProperty: col.props.nameProperty,
-                    style: col.props.style,
-                    className: col.props.className,
-                    children: col.props.children,
-                })
-            })
-            Children.map(element.props.children, () => {
-                this.listGroup.push({
-                    className: element.props.className,
-                    style: element.props.style,
-                })
-            })
-
-            if (header) {
-
-                header.width = appendWidth(header.width, element.props.style?.width);
-                console.log(header.width)
-                header.colspan! += React.Children.count(element.props.children);
-            }
-        } else {
-
-            this.listGroup.push(undefined)
-            this.list!.push({
-                nameProperty: element.props.nameProperty,
-                style: element.props.style,
-                className: element.props.className,
-                children: element.props.children,
-            })
-            if (header) {// todo добавить стиль ширины
-                header.width = appendWidth(header.width, element.props.style?.width)
-                header.colspan! += 1;// React.Children.count((d as any).props.children);
-            }
-
-        }
-    }
 
     private columnClick(nameProperty: string, eventKey: string | undefined, eventTarget: EventTarget) {
 
@@ -462,11 +422,11 @@ export class Table extends React.Component<PropsTable, any> {
     }
 
 
-    get height(): number | undefined {
+    public get height(): number | undefined {
         return this.heightInner;
     }
 
-    set height(value) {
+    public set height(value) {
         this.heightInner = value;
         this.refreshHeight(() => {
             this.forceUpdate()
@@ -501,7 +461,7 @@ export class Table extends React.Component<PropsTable, any> {
         window.addEventListener('keydown', this.keyUp)
     }
 
-    updateHeightForScroll() {
+    private updateHeightForScroll() {
         setTimeout(() => {
             let hs = this.refDivBody.current!.offsetWidth - this.refDivBody.current!.clientWidth;
             if (hs > 0) {
@@ -530,7 +490,7 @@ export class Table extends React.Component<PropsTable, any> {
         this.updateHeightForScroll()
     }
 
-    validatePosition(t: number) {
+    private validatePosition(t: number) {
         let top = this.refDivBody.current!.scrollTop;
         let h = this.refDivBody.current!.offsetHeight;
         if (t < top) {
@@ -542,7 +502,7 @@ export class Table extends React.Component<PropsTable, any> {
         return 2
     }
 
-    keyUp(e: KeyboardEvent) {
+    private keyUp(e: KeyboardEvent) {
 
         if (!this.props.useRowSelection) return;
         if (this.mapTotal.size === 0) return
