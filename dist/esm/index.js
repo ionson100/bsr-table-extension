@@ -309,45 +309,6 @@ var Table = /** @class */ (function (_super) {
             }
         });
     };
-    Table.prototype.innerParserProps = function (d, header) {
-        var _this = this;
-        var _a, _b;
-        var element = d;
-        if (element.type === ColumnGroup) {
-            Children.map(element.props.children, function (col) {
-                _this.list.push({
-                    nameProperty: col.props.nameProperty,
-                    style: col.props.style,
-                    className: col.props.className,
-                    children: col.props.children,
-                });
-            });
-            Children.map(element.props.children, function () {
-                _this.listGroup.push({
-                    className: element.props.className,
-                    style: element.props.style,
-                });
-            });
-            if (header) {
-                header.width = appendWidth(header.width, (_a = element.props.style) === null || _a === void 0 ? void 0 : _a.width);
-                console.log(header.width);
-                header.colspan += React.Children.count(element.props.children);
-            }
-        }
-        else {
-            this.listGroup.push(undefined);
-            this.list.push({
-                nameProperty: element.props.nameProperty,
-                style: element.props.style,
-                className: element.props.className,
-                children: element.props.children,
-            });
-            if (header) { // todo добавить стиль ширины
-                header.width = appendWidth(header.width, (_b = element.props.style) === null || _b === void 0 ? void 0 : _b.width);
-                header.colspan += 1; // React.Children.count((d as any).props.children);
-            }
-        }
-    };
     Table.prototype.columnClick = function (nameProperty, eventKey, eventTarget) {
         if (this.props.onClickColumn) {
             this.props.onClickColumn(nameProperty, eventTarget, eventKey);

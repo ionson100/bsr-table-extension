@@ -32,7 +32,6 @@ export declare class Table extends React.Component<PropsTable, any> {
     private innerRender;
     private mapSimpleCell;
     private mapColumnCroup;
-    private innerParserProps;
     private columnClick;
     Refresh(callback?: () => void): void;
     GetDataRowByIndex(index: number): DataRow | undefined;
@@ -42,11 +41,11 @@ export declare class Table extends React.Component<PropsTable, any> {
     set height(value: number | undefined);
     private refreshHeight;
     componentDidMount(): void;
-    updateHeightForScroll(): void;
+    private updateHeightForScroll;
     componentWillUnmount(): void;
     componentDidUpdate(): void;
-    validatePosition(t: number): 1 | 3 | 2;
-    keyUp(e: KeyboardEvent): void;
+    private validatePosition;
+    private keyUp;
     private renderHeader;
     private renderHeaderGroup;
     SelectRowByIdAndClick(id: string): void;
