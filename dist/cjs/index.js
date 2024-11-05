@@ -263,9 +263,6 @@ var Table = /** @class */ (function (_super) {
                 }
             });
         }
-        this.listHeaderGroup.forEach(function (group) {
-            console.log(group);
-        });
     };
     Table.prototype.mapSimpleCell = function (element, header) {
         var _a, _b, _c;

@@ -65,4 +65,4 @@ MIT © [ionson100](https://github.com/ionson100)
 
 
 
-[Examples, Help pages](https://ionson100.github.io/wwwroot/index.html#page=15-2).
+[Examples, Help pages](https://ionson100.github.io/wwwroot/index.html#page=table-ex).

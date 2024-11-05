@@ -1,6 +1,6 @@
 {
   "name": "bsr-table-extension",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "React component table ",
   "author": "ionson100",
   "license": "MIT",
@@ -14,7 +14,7 @@
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/index.d.ts",
-  "homepage": "https://github.com/ionson100/bsr-table-extension",
+  "homepage": "https://ionson100.github.io/wwwroot/index.html#page=table-ex",
   "files": [
     "dist",
     "README.md"

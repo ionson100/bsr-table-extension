@@ -157,10 +157,6 @@ export class Table extends React.Component<PropsTable, any> {
                 }
             })
         }
-        this.listHeaderGroup.forEach(group => {
-            console.log(group)
-        })
-
     }
 
     private mapSimpleCell(element: React.ReactElement<any, string | React.JSXElementConstructor<any>>, header?: headerGroupType) {
