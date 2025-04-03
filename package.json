@@ -1,6 +1,6 @@
 {
   "name": "bsr-table-extension",
-  "version": "2.1.5",
+  "version": "3.0.0",
   "description": "React component table ",
   "author": "ionson100",
   "license": "MIT",
@@ -20,8 +20,7 @@
     "README.md"
   ],
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react": "*"
   },
   "scripts": {
     "build": "rollup -c --bundleConfigAsCjs && @powershell copy  src/table/index.css ./dist"
@@ -45,6 +44,8 @@
     ]
   },
   "devDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
